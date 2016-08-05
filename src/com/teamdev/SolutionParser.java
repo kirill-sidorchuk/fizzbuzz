@@ -57,8 +57,8 @@ public class SolutionParser {
 
     public static void main(String[] args) throws IOException {
         Solution solution = new SolutionParser().parse(new File(args[0]));
-        Solution translated = solution.translate(-134, 2552, -31911, 43335);
-//        Solution rotated = translated.rotate(-Math.PI/4);
+        Solution translated = solution.translate(-3, 4, -1, 2);
+        Solution rotated = translated.rotate(-Math.PI/4);
         String s = translated.toStringFormat();
         System.out.println(s);
     }

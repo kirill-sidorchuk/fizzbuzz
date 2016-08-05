@@ -95,7 +95,7 @@ public class Vertex {
         long _nX = nX*v.dX + v.nX*dX;
         long _dX = v.dX * dX;
         long _nY = nY*v.dY + v.nY*dY;
-        long _dY = v.dY * dX;
+        long _dY = v.dY * dY;
 
         return new Vertex(_nX, _dX, _nY, _dY);
         // todo add big decimals
