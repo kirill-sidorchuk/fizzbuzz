@@ -38,7 +38,9 @@ public class ProblemReader {
             lineSegments.add(lineSegment);
         }
 
-        return new Problem(polygons, lineSegments);
+        Problem problem = new Problem(polygons, lineSegments);
+        Converter.shiftCoordinates(problem);
+        return problem;
     }
 
 

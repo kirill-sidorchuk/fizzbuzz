@@ -1,10 +1,15 @@
 package com.teamdev;
 
+import sun.plugin.dom.exception.InvalidStateException;
+
+import java.math.BigDecimal;
+
 /**
  * Created by kirill.sidorchuk on 8/5/2016.
  */
 public class Vertex {
 
+    boolean shifted = false;
     // x
     public long nX; // nominator
     public long dX; // denominator
@@ -13,11 +18,19 @@ public class Vertex {
     public long nY; // nominator
     public long dY; // denominator
 
-    public Vertex(long nX, long dX, long nY, long dY) {
-        this.nX = nX;
-        this.dX = dX;
-        this.nY = nY;
-        this.dY = dY;
+    // x in Big Decimal
+    public BigDecimal nXBig; // nominator
+    public BigDecimal dXBig; // denominator
+
+    // y in Big Decimal
+    public BigDecimal nYBig; // nominator
+    public BigDecimal dYBig; // denominator
+
+    public Vertex(BigDecimal nX, BigDecimal dX, BigDecimal nY, BigDecimal dY) {
+        this.nXBig = nX;
+        this.dXBig = dX;
+        this.nYBig = nY;
+        this.dYBig = dY;
     }
 
     public Vertex(String line) {
@@ -29,30 +42,38 @@ public class Vertex {
 
         i = xLine.indexOf('/');
         if( i == -1 ) {
-            nX = Long.parseLong(xLine);
-            dX = 1;
+            nXBig = new BigDecimal(xLine);
+            dXBig = new BigDecimal(1);
         }
         else {
-            nX = Long.parseLong(xLine.substring(0, i).trim());
-            dX = Long.parseLong(xLine.substring(i+1).trim());
+            nXBig = new BigDecimal(xLine.substring(0, i).trim());
+            dXBig = new BigDecimal(xLine.substring(i+1).trim());
         }
 
         i = yLine.indexOf('/');
         if( i == -1 ) {
-            nY = Long.parseLong(yLine);
-            dY = 1;
+            nYBig = new BigDecimal(yLine);
+            dYBig = new BigDecimal(1);
         }
         else {
-            nY = Long.parseLong(yLine.substring(0, i).trim());
-            dY = Long.parseLong(yLine.substring(i+1).trim());
+            nYBig = new BigDecimal(yLine.substring(0, i).trim());
+            dYBig = new BigDecimal(yLine.substring(i+1).trim());
+        }
+    }
+
+    private void checkShifted(){
+        if (!shifted) {
+            throw new InvalidStateException("Vertex is not shifted");
         }
     }
 
     public float getFloatX() {
+        checkShifted();
         return (float) ((double)nX / (double) dX);
     }
 
     public float getFloatY() {
+        checkShifted();
         return (float) ((double)nY / (double) dY);
     }
 }

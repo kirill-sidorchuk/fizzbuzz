@@ -8,6 +8,7 @@ import java.util.List;
 public class Problem {
     public List<OPolygon> polygons;
     public List<LineSegment> lineSegments;
+    public VertexShift vertexShift;
     private FRange xRange;
     private FRange yRange;
 
