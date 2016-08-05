@@ -25,10 +25,10 @@ public class PolygonHelper {
         int sizeCounter = 1;
         ImageData maxPoint = getMaxAndMinPoint(polygons);
         if (maxPoint.getMaxX() < 500) sizeCounter = 3;
-        BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D graphics2DFinal = bufferedImageFinal.createGraphics();
         for (OPolygon polygon : polygons) {
-            BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_BYTE_GRAY);
+            BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
             int polySize = polygon.vertices.size();
             Graphics2D graphics2D = bufferedImage.createGraphics();
             int[] xpoint = new int[polySize];
@@ -38,28 +38,29 @@ public class PolygonHelper {
                 xpoint[i] = (int) (ProblemVisualizer.xToPlot(vertices.get(i).getFloatX()) - maxPoint.getMinX()) * sizeCounter;
                 ypoint[i] = (int) (ProblemVisualizer.yToPlot(vertices.get(i).getFloatY()) - maxPoint.getMinY()) * sizeCounter;
             }
-/*        List<TrianglePolygon> trianglePolygons = new ArrayList<>();
-        System.out.println(getPolygonArea(xpoint, ypoint, polySize, trianglePolygons));
-        for (int i = 0; i < trianglePolygons.size(); i++) {
-            int[] polyX = new int[3];
-            int[] polyY = new int[3];
-            polyX[0] = trianglePolygons.get(i).x1;
-            polyX[1] = trianglePolygons.get(i).x2;
-            polyX[2] = trianglePolygons.get(i).x3;
-            polyY[0] = trianglePolygons.get(i).y1;
-            polyY[1] = trianglePolygons.get(i).y2;
-            polyY[2] = trianglePolygons.get(i).y3;
-            if (i % 3 == 0) {
-                graphics2D.setColor(Color.red);
-                graphics2D.fillPolygon(polyX, polyY, 3);
-            } else if (i % 3 == 1) {
-                graphics2D.setColor(Color.green);
-                graphics2D.fillPolygon(polyX, polyY, 3);
-            } else {
-                graphics2D.setColor(Color.blue);
-                graphics2D.fillPolygon(polyX, polyY, 3);
+            List<TrianglePolygon> trianglePolygons = new ArrayList<>();
+            System.out.println(getPolygonArea(xpoint, ypoint, polySize, trianglePolygons));
+            for (int i = 0; i < trianglePolygons.size(); i++) {
+                int[] polyX = new int[3];
+                int[] polyY = new int[3];
+                polyX[0] = trianglePolygons.get(i).x1;
+                polyX[1] = trianglePolygons.get(i).x2;
+                polyX[2] = trianglePolygons.get(i).x3;
+                polyY[0] = trianglePolygons.get(i).y1;
+                polyY[1] = trianglePolygons.get(i).y2;
+                polyY[2] = trianglePolygons.get(i).y3;
+
+                if (i % 3 == 0) {
+                    graphics2D.setColor(Color.red);
+                    graphics2D.fillPolygon(polyX, polyY, 3);
+                } else if (i % 3 == 1) {
+                    graphics2D.setColor(Color.green);
+                    graphics2D.fillPolygon(polyX, polyY, 3);
+                } else {
+                    graphics2D.setColor(Color.blue);
+                    graphics2D.fillPolygon(polyX, polyY, 3);
+                }
             }
-        }*/
             graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
             if (counter % 3 == 0) {
                 graphics2DFinal.setColor(Color.red);
@@ -71,7 +72,7 @@ public class PolygonHelper {
                 graphics2DFinal.setColor(Color.blue);
                 graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
             }
-            graphics2D.fillPolygon(xpoint, ypoint, polySize);
+            //   graphics2D.fillPolygon(xpoint, ypoint, polySize);
             File file = new File("poly/" + Main.task + "." + counter + ".png");
             try {
                 ImageIO.write(bufferedImage, "png", file);
@@ -118,7 +119,10 @@ public class PolygonHelper {
     }
 
     public float getPolygonArea(int[] xpoint, int[] ypoint, int polySize, List<TrianglePolygon> trianglePolygons) {
-        trianglePolygons.addAll(getTriangles(createTriangulationPoint(xpoint, ypoint, polySize)));
+        List<TrianglePolygon> resultPolygons = getTriangles(createTriangulationPointFirst(xpoint, ypoint, polySize));
+        if (resultPolygons == null) resultPolygons= getTriangles(createTriangulationPointSecond(xpoint, ypoint, polySize));
+        if(resultPolygons == null)   throw new IllegalArgumentException("У Сережи кривые руки");
+        trianglePolygons.addAll(resultPolygons);
         float square = 0;
         for (TrianglePolygon polygon : trianglePolygons) {
             double x1 = polygon.x1;
@@ -141,20 +145,40 @@ public class PolygonHelper {
         return square;
     }
 
-    private TriangulationPoint createTriangulationPoint(int[] xpoint, int[] ypoint, int polySize) {
+    private TriangulationPoint createTriangulationPointFirst(int[] xpoint, int[] ypoint, int polySize) {
         TriangulationPoint start = new TriangulationPoint();
         start.x = xpoint[polySize - 1];
         start.y = ypoint[polySize - 1];
+        start.counter = polySize;
         TriangulationPoint next = start;
         for (int i = polySize - 2; i >= 0; i--) {
             next.nextPoint = new TriangulationPoint();
             next.nextPoint.x = xpoint[i];
             next.nextPoint.y = ypoint[i];
+            next.counter = polySize;
             next = next.nextPoint;
         }
         next.nextPoint = start;
         return start;
     }
+
+    private TriangulationPoint createTriangulationPointSecond(int[] xpoint, int[] ypoint, int polySize) {
+        TriangulationPoint start = new TriangulationPoint();
+        start.x = xpoint[0];
+        start.y = ypoint[0];
+        start.counter = polySize;
+        TriangulationPoint next = start;
+        for (int i = 1; i < polySize; i++) {
+            next.nextPoint = new TriangulationPoint();
+            next.nextPoint.x = xpoint[i];
+            next.nextPoint.y = ypoint[i];
+            next.counter = polySize;
+            next = next.nextPoint;
+        }
+        next.nextPoint = start;
+        return start;
+    }
+
 
     public double det(int x1, int y1, int x2, int y2, int x3, int y3) {
         return (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1);
@@ -176,8 +200,11 @@ public class PolygonHelper {
         TriangulationPoint point1 = triangulationPoint;
         TriangulationPoint point2 = point1.getNextPoint();
         TriangulationPoint point3 = point2.getNextPoint();
-
+        int size = point1.counter;
+        int counter = 0;
         while (point3.getNextPoint() != point1) {
+            if (counter > size * 2)
+                return null;
             boolean inPoint = false;
             TriangulationPoint node = point3.getNextPoint();
             while (node != point1) {
@@ -191,11 +218,13 @@ public class PolygonHelper {
                 trianglePolygons.add(new TrianglePolygon(point1.x, point1.y, point2.x, point2.y, point3.x, point3.y));
                 point2 = point1.nextPoint;
                 point3 = point2.nextPoint;
+                counter--;
             } else {
                 point1 = point1.nextPoint;
                 point2 = point1.nextPoint;
                 point3 = point2.nextPoint;
             }
+            counter++;
         }
         trianglePolygons.add(new TrianglePolygon(point1.x, point1.y, point2.x, point2.y, point3.x, point3.y));
         return trianglePolygons;
