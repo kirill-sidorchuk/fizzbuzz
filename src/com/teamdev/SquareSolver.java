@@ -9,6 +9,9 @@ public class SquareSolver extends Solver {
     public String solve(Problem p) {
 
         // generating square that fits p
+        FRange xr = p.getXRange();
+        FRange yr = p.getYRange();
+
 
 
         return null;
