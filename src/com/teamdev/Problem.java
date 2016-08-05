@@ -46,4 +46,12 @@ public class Problem {
         yRange = new FRange(minY, maxY);
     }
 
+
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "polygons=" + polygons +
+                ", lineSegments=" + lineSegments +
+                '}';
+    }
 }
