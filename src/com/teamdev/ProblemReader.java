@@ -9,13 +9,20 @@ import java.util.List;
  */
 public class ProblemReader {
 
-
-
     public static void read(File file) throws IOException {
 
         List<String> lines = readLines(file);
 
+        int nPolys = Integer.parseInt(lines.get(0).trim());
+        int pos = 1;
+        for( int p=0; p<nPolys; ++p) {
+            Polygon polygon = new Polygon();
+            int nVerts = Integer.parseInt(lines.get(pos).trim());
+            pos++;
 
+            for( int v=0; v<nVerts; ++v, ++pos)
+                polygon.vertices.add(new Vertex(lines.get(pos)));
+        }
 
     }
 
