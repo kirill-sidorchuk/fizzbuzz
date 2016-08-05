@@ -13,4 +13,12 @@ public class Problem {
         this.polygons = polygons;
         this.lineSegments = lineSegments;
     }
+
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "polygons=" + polygons +
+                ", lineSegments=" + lineSegments +
+                '}';
+    }
 }

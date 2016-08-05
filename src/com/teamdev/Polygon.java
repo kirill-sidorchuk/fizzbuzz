@@ -27,4 +27,8 @@ public class Polygon {
         }
         return result;
     }
+
+    public List<Vertex> getVertices() {
+        return vertices;
+    }
 }
