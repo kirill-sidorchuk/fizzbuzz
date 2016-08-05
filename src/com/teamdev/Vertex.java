@@ -3,6 +3,8 @@ package com.teamdev;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by kirill.sidorchuk on 8/5/2016.
@@ -26,11 +28,29 @@ public class Vertex {
     public BigDecimal nYBig; // nominator
     public BigDecimal dYBig; // denominator
 
+    public Vertex() {
+        nX = 0;
+        dX = 1;
+        nY = 0;
+        dY = 1;
+        nXBig = new BigDecimal(0);
+        dXBig = new BigDecimal(1);
+        nYBig = new BigDecimal(0);
+        dYBig = new BigDecimal(1);
+    }
+
     public Vertex(BigDecimal nX, BigDecimal dX, BigDecimal nY, BigDecimal dY) {
         this.nXBig = nX;
         this.dXBig = dX;
         this.nYBig = nY;
         this.dYBig = dY;
+    }
+
+    public Vertex(long nX, long dX, long nY, long dY) {
+        this.nX = nX;
+        this.dX = dX;
+        this.nY = nY;
+        this.dY = dY;
     }
 
     public Vertex(String line) {
@@ -60,6 +80,28 @@ public class Vertex {
             dYBig = new BigDecimal(yLine.substring(i+1).trim());
         }
     }
+
+    public void add(Vertex v) {
+        nX = (nX*v.dX + v.nX*dX) / (dX*v.dX);
+        nY = (nY*v.dY + v.nY*dY) / (dY*v.dY);
+
+        // todo add big decimals
+    }
+
+    public static Vertex average(List<Vertex> list) {
+        double x = 0;
+        double y = 0;
+        for (Vertex v : list) {
+            x += v.getFloatX();
+            y += v.getFloatY();
+        }
+
+        final int ACC = 1000;
+        int den = ACC * list.size();
+
+        return new Vertex((long)(ACC*x), den, (long) (y*ACC), den);
+    }
+
 
     private void checkShifted(){
         if (!shifted) {

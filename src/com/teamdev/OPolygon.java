@@ -10,6 +10,7 @@ public class OPolygon {
 
     private FRange xRange;
     private FRange yRange;
+    private Vertex center;
 
     public List<Vertex> vertices = new ArrayList<>();
 
@@ -43,6 +44,12 @@ public class OPolygon {
         yRange = new FRange(minY, maxY);
     }
 
+    public Vertex getCenter() {
+        if( center == null ) {
+            center = Vertex.average(vertices);
+        }
+        return center;
+    }
 
     @Override
     public String toString() {
