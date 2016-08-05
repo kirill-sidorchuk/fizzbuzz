@@ -10,19 +10,6 @@ import java.util.List;
  */
 public class SolutionParser {
 
-    public static class ParsedSolution {
-        public List<Vertex> inVertices;
-        public List<Vertex> outVertices;
-        public List<List<Integer>> facets;
-
-        public ParsedSolution(List<Vertex> inVertices, List<Vertex> outVertices, List<List<Integer>> facets) {
-            this.inVertices = inVertices;
-            this.outVertices = outVertices;
-            this.facets = facets;
-        }
-    }
-
-
     public void parse(File name) throws IOException {
         List<String> lines = Utils.readLines(name);
 
@@ -35,7 +22,7 @@ public class SolutionParser {
         }
 
         // reading facets
-        List<List<Integer>> facets = new ArrayList<>();
+        List<Facet> facets = new ArrayList<>();
         int nFacets = Integer.parseInt(lines.get(pos).trim());
         pos++;
         for( int f=0; f<nFacets; ++f, ++pos) {
@@ -43,14 +30,14 @@ public class SolutionParser {
             int i = line.indexOf(' ');
             if( i == -1 ) throw new RuntimeException("failed to parse number of points, for facet #" + Integer.toString(f));
 
-            List<Integer> facet = new ArrayList<>();
+            Facet facet = new Facet();
             facets.add(facet);
             int nPoints = Integer.parseInt(line.substring(0, i).trim());
             for( int p=0; p<nPoints; ++p) {
                 int j = line.indexOf(' ', i+1);
                 int index = Integer.parseInt(line.substring(i+1, j==-1 ? line.length() : j).trim());
                 i = j;
-                facet.add(index);
+                facet.vertexIndices.add(index);
             }
         }
 
@@ -60,7 +47,7 @@ public class SolutionParser {
             finalVerts.add(new Vertex(lines.get(pos)));
         }
 
-        ParsedSolution parsedSolution = new ParsedSolution(vertices, finalVerts, facets);
+        Solution solution = new Solution(vertices, facets, finalVerts);
     }
 
     public static void main(String[] args) throws IOException {

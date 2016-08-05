@@ -1,5 +1,6 @@
 package com.teamdev;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Facet {
@@ -7,6 +8,10 @@ public class Facet {
 
     public Facet(List<Integer> vertexIndices) {
         this.vertexIndices = vertexIndices;
+    }
+
+    public Facet() {
+        vertexIndices = new ArrayList<>();
     }
 
     @Override
