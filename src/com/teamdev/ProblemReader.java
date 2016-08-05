@@ -9,9 +9,10 @@ import java.util.List;
  */
 public class ProblemReader {
 
-    public static void read(File file) throws IOException {
-
+    public static Problem read(File file) throws IOException {
         List<String> lines = readLines(file);
+
+        List<Polygon> polygons = new ArrayList<>();
 
         int nPolys = Integer.parseInt(lines.get(0).trim());
         int pos = 1;
@@ -20,10 +21,24 @@ public class ProblemReader {
             int nVerts = Integer.parseInt(lines.get(pos).trim());
             pos++;
 
-            for( int v=0; v<nVerts; ++v, ++pos)
+            for( int v=0; v<nVerts; ++v, ++pos) {
                 polygon.vertices.add(new Vertex(lines.get(pos)));
+            }
+
+            polygons.add(polygon);
         }
 
+        List<LineSegment> lineSegments = new ArrayList<>();
+
+        int nLines = Integer.parseInt(lines.get(pos).trim());
+        pos++;
+        for( int p=0; p<nLines; ++p) {
+            LineSegment lineSegment = new LineSegment(lines.get(pos).trim());
+            pos++;
+            lineSegments.add(lineSegment);
+        }
+
+        return new Problem(polygons, lineSegments);
     }
 
 

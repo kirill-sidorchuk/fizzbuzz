@@ -39,12 +39,12 @@ public class Vertex {
 
         i = yLine.indexOf('/');
         if( i == -1 ) {
-            nY = Integer.parseInt(xLine);
+            nY = Integer.parseInt(yLine);
             dY = 1;
         }
         else {
-            nY = Integer.parseInt(xLine.substring(0, i).trim());
-            dY = Integer.parseInt(xLine.substring(i+1).trim());
+            nY = Integer.parseInt(yLine.substring(0, i).trim());
+            dY = Integer.parseInt(yLine.substring(i+1).trim());
         }
     }
 
