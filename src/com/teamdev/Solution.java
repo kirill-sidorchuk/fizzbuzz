@@ -15,4 +15,22 @@ public class Solution {
         this.facets = facets;
         this.destinationPositions = destinationPositions;
     }
+
+    public String toStringFormat() {
+        String result = "";
+        result += sourcePositions.size() + "\n";
+        for (Vertex vertex : sourcePositions) {
+            result += vertex + "\n";
+        }
+
+        result += facets.size() + "\n";
+        for (Facet facet : facets) {
+            result += facet + "\n";
+        }
+
+        for (Vertex vertex : destinationPositions) {
+            result += vertex + "\n";
+        }
+        return result;
+    }
 }

@@ -1,5 +1,6 @@
 package com.teamdev;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +12,7 @@ public class Problem {
     public VertexShift vertexShift;
     private FRange xRange;
     private FRange yRange;
+    private Vertex center;
 
     public Problem(List<OPolygon> polygons, List<LineSegment> lineSegments) {
         this.polygons = polygons;
@@ -47,6 +49,32 @@ public class Problem {
         yRange = new FRange(minY, maxY);
     }
 
+    public Vertex getCenter() {
+        if( center == null ) {
+            List<Vertex> centers = new ArrayList<>();
+            for (OPolygon polygon : polygons) {
+                centers.add(polygon.getCenter());
+            }
+            center = Vertex.average(centers);
+        }
+        return center;
+    }
+
+    public String toStringFormat() {
+        String result = "";
+
+        result += polygons.size() + "\n";
+        for (OPolygon polygon : polygons) {
+            result += polygon.toStringFormat();
+        }
+
+        result += lineSegments.size() + "\n";
+        for (LineSegment lineSegment : lineSegments) {
+            result += lineSegment + "\n";
+        }
+
+        return result;
+    }
 
     @Override
     public String toString() {
