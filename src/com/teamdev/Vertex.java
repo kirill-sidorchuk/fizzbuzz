@@ -108,4 +108,17 @@ public class Vertex {
         result = 31 * result + (int) (dY ^ (dY >>> 32));
         return result;
     }
+
+    @Override
+    public String toString() {
+        String vdx_str = "";
+        if (dX != 1) {
+            vdx_str = "/" + dX;
+        }
+        String vdy_str = "";
+        if (dY != 1) {
+            vdy_str = "/" + dY;
+        }
+        return nX + vdx_str + "," + nY + vdy_str;
+    }
 }

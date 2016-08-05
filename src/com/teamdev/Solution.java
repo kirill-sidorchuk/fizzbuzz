@@ -15,4 +15,23 @@ public class Solution {
         this.facets = facets;
         this.destinationPositions = destinationPositions;
     }
+
+    @Override
+    public String toString() {
+        String result = "";
+        result += sourcePositions.size() + "\n";
+        for (Vertex vertex : sourcePositions) {
+            result += vertex.toString() + "\n";
+        }
+
+        result += facets.size() + "\n";
+        for (Facet facet : facets) {
+            result += facet.toString() + "\n";
+        }
+
+        for (Vertex vertex : destinationPositions) {
+            result += vertex.toString() + "\n";
+        }
+        return result;
+    }
 }
