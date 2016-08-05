@@ -55,4 +55,12 @@ public class Solution {
         return new Solution(sourcePositions, facets, newDst);
     }
 
+    public Solution translate(long nx, long dx, long ny, long dy) {
+        Vertex T = new Vertex(nx, dx, ny, dy);
+        List<Vertex> newDst = new ArrayList<>();
+        for (Vertex vertex : destinationPositions) {
+            newDst.add(vertex.translate(T));
+        }
+        return new Solution(sourcePositions, facets, newDst);
+    }
 }

@@ -91,10 +91,13 @@ public class Vertex {
         shifted = true;
     }
 
-    public void add(Vertex v) {
-        nX = (nX*v.dX + v.nX*dX) / (dX*v.dX);
-        nY = (nY*v.dY + v.nY*dY) / (dY*v.dY);
+    public Vertex translate(Vertex v) {
+        long _nX = nX*v.dX + v.nX*dX;
+        long _dX = v.dX * dX;
+        long _nY = nY*v.dY + v.nY*dY;
+        long _dY = v.dY * dX;
 
+        return new Vertex(_nX, _dX, _nY, _dY);
         // todo add big decimals
     }
 
