@@ -26,13 +26,14 @@ public class Converter {
         BigDecimal nYShift; // nominator
         BigDecimal dYShift = new BigDecimal(0); // denominator
 
-        final Comparator<Vertex> comp = (p1, p2) -> Double.compare(p1.nXBig.doubleValue() / p1.dXBig.doubleValue(), p2.nXBig.doubleValue()/ p2.dXBig.doubleValue());
+        final Comparator<Vertex> compX = (p1, p2) -> Double.compare(p1.nXBig.doubleValue() / p1.dXBig.doubleValue(), p2.nXBig.doubleValue()/ p2.dXBig.doubleValue());
+        final Comparator<Vertex> compY = (p1, p2) -> Double.compare(p1.nYBig.doubleValue() / p1.dYBig.doubleValue(), p2.nYBig.doubleValue()/ p2.dYBig.doubleValue());
 
-        nXShift = list.stream().min(comp).map(vertex -> vertex.nXBig).get();
-        dXShift = list.stream().min(comp).map(vertex -> vertex.dXBig).get();
+        nXShift = list.stream().min(compX).map(vertex -> vertex.nXBig).get();
+        dXShift = list.stream().min(compX).map(vertex -> vertex.dXBig).get();
 
-        nYShift = list.stream().min(comp).map(vertex -> vertex.nYBig).get();
-        dYShift = list.stream().min(comp).map(vertex -> vertex.dYBig).get();
+        nYShift = list.stream().min(compY).map(vertex -> vertex.nYBig).get();
+        dYShift = list.stream().min(compY).map(vertex -> vertex.dYBig).get();
 
         for (Vertex vertex : list){
             vertex.nX = vertex.nXBig.subtract(nXShift).longValue();
