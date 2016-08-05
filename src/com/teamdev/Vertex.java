@@ -83,11 +83,30 @@ public class Vertex {
         }
     }
 
+    public void makeValidFromSimpleFraction() {
+        nX = nXBig.longValue();
+        dX = dXBig.longValue();
+        nY = nYBig.longValue();
+        dY = dYBig.longValue();
+        shifted = true;
+    }
+
     public void add(Vertex v) {
         nX = (nX*v.dX + v.nX*dX) / (dX*v.dX);
         nY = (nY*v.dY + v.nY*dY) / (dY*v.dY);
 
         // todo add big decimals
+    }
+
+    public Vertex rotate(double[] R) {
+        float fx = getFloatX();
+        float fy = getFloatY();
+
+        double rx = R[0] * fx + R[1] * fy;
+        double ry = R[2] * fx + R[3] * fy;
+
+        final int ACC = 10000;
+        return new Vertex( Math.round(rx*ACC), ACC, Math.round(ry*ACC), ACC);
     }
 
     public static Vertex average(List<Vertex> list) {
@@ -101,7 +120,7 @@ public class Vertex {
         final int ACC = 1000;
         int den = ACC * list.size();
 
-        return new Vertex((long)(ACC*x), den, (long) (y*ACC), den);
+        return new Vertex(Math.round(ACC*x), den, Math.round(y*ACC), den);
     }
 
 

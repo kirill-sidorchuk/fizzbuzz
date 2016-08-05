@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class SolutionParser {
 
-    public void parse(File name) throws IOException {
+    public Solution parse(File name) throws IOException {
         List<String> lines = Utils.readLines(name);
 
         // reading vertices
@@ -18,7 +18,9 @@ public class SolutionParser {
         int nVertices = Integer.parseInt(lines.get(0).trim());
         int pos = 1;
         for( int v=0; v<nVertices; ++v, ++pos) {
-            vertices.add(new Vertex(lines.get(pos)));
+            Vertex vx = new Vertex(lines.get(pos));
+            vx.makeValidFromSimpleFraction();
+            vertices.add(vx);
         }
 
         // reading facets
@@ -44,13 +46,18 @@ public class SolutionParser {
         // reading final vertices
         List<Vertex> finalVerts = new ArrayList<>();
         for (int v = 0; v < nVertices; ++v, ++pos) {
-            finalVerts.add(new Vertex(lines.get(pos)));
+            Vertex vx = new Vertex(lines.get(pos));
+            vx.makeValidFromSimpleFraction();
+            finalVerts.add(vx);
         }
 
-        Solution solution = new Solution(vertices, facets, finalVerts);
+        return new Solution(vertices, facets, finalVerts);
     }
 
     public static void main(String[] args) throws IOException {
-        new SolutionParser().parse(new File(args[0]));
+        Solution solution = new SolutionParser().parse(new File(args[0]));
+        Solution rotated = solution.rotate(Math.PI);
+        String s = rotated.toStringFormat();
+        System.out.println(s);
     }
 }
