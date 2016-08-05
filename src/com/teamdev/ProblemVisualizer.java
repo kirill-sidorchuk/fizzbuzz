@@ -13,21 +13,23 @@ public class ProblemVisualizer extends Frame {
     public static final int GRAPHIC_WIDTH = 600;
     public static final int GRAPHIC_HEIGHT = 600;
 
-    public static int xToPlot(float x) {
-        if (x < 0 || x > 1.01) {
-            throw new IllegalArgumentException("value of x expected to be in range [0:1], actual value: " + x);
+    public static final float MAX_SIZE = (float) Math.sqrt(2);
+
+    private static int xToPlot(float x) {
+        if (x < 0 || x > MAX_SIZE) {
+            throw new IllegalArgumentException("value of x expected to be in range [0:sqrt(2)], actual value: " + x);
         }
         int borderWidth = (IMAGE_WIDTH - GRAPHIC_WIDTH) / 2;
-        return borderWidth + (int) (GRAPHIC_WIDTH * x);
+        return borderWidth + (int) (GRAPHIC_WIDTH * x / MAX_SIZE);
     }
 
-    public static int yToPlot(float y) {
-        if (y < 0 || y > 1.01) {
-            throw new IllegalArgumentException("value of y expected to be in range [0:1], actual value: " + y);
+    private static int yToPlot(float y) {
+        if (y < 0 || y > MAX_SIZE) {
+            throw new IllegalArgumentException("value of y expected to be in range [0:sqrt(2)], actual value: " + y);
         }
         int borderHeight = (IMAGE_HEIGHT - GRAPHIC_HEIGHT) / 2;
-        y = 1 - y;
-        return borderHeight + (int) (GRAPHIC_HEIGHT * y);
+        y = MAX_SIZE - y;
+        return borderHeight + (int) (GRAPHIC_HEIGHT * y / MAX_SIZE);
     }
 
     private static void plotPolygons(Graphics2D gr, Problem problem) {
@@ -44,8 +46,6 @@ public class ProblemVisualizer extends Frame {
 
                 float y = polygon.vertices.get(i).getFloatY();
                 yPoints[i] = yToPlot(y);
-
-
             }
 
             gr.setColor(Color.pink);
@@ -75,12 +75,12 @@ public class ProblemVisualizer extends Frame {
         gr.drawLine(gridx1, gridy1, gridx1, gridy2);
         gr.drawLine(gridx1, gridy2, gridx2, gridy2);
 
-        for (float i = 0; i < 1.01; i += 0.1) {
+        for (float i = 0; i < MAX_SIZE + 0.01; i += 0.1) {
             gr.drawLine(xToPlot(i), gridy2 - 5, xToPlot(i), gridy2 + 5);
             gr.drawString(String.format("%.1f", i), xToPlot(i) - 5f, gridy2 + 25);
         }
 
-        for (float i = 0; i < 1.01; i += 0.1) {
+        for (float i = 0; i < MAX_SIZE + 0.01; i += 0.1) {
             gr.drawLine(gridx1 - 5, yToPlot(i), gridx1 + 5, yToPlot(i));
             gr.drawString(String.format("%.1f", i), gridx1 - 30, yToPlot(i) + 5);
         }
