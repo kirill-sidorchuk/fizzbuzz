@@ -53,6 +53,14 @@ public class Vertex {
         this.dY = dY;
     }
 
+    public Vertex(long nX, long dX, long nY, long dY) {
+        this.nX = nX;
+        this.dX = dX;
+        this.nY = nY;
+        this.dY = dY;
+        shifted = true;
+    }
+
     public Vertex(String line) {
         int i = line.indexOf(',');
         if( i == -1 ) throw new RuntimeException("Failed to parse line: " + line);
@@ -117,5 +125,42 @@ public class Vertex {
     public float getFloatY() {
         checkShifted();
         return (float) ((double)nY / (double) dY);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Vertex vertex = (Vertex) o;
+
+        if (nX != vertex.nX) return false;
+        if (dX != vertex.dX) return false;
+        if (nY != vertex.nY) return false;
+        if (dY != vertex.dY) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (nX ^ (nX >>> 32));
+        result = 31 * result + (int) (dX ^ (dX >>> 32));
+        result = 31 * result + (int) (nY ^ (nY >>> 32));
+        result = 31 * result + (int) (dY ^ (dY >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String vdx_str = "";
+        if (dX != 1) {
+            vdx_str = "/" + dX;
+        }
+        String vdy_str = "";
+        if (dY != 1) {
+            vdy_str = "/" + dY;
+        }
+        return nX + vdx_str + "," + nY + vdy_str;
     }
 }

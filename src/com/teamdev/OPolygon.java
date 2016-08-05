@@ -51,20 +51,11 @@ public class OPolygon {
         return center;
     }
 
-    @Override
-    public String toString() {
+    public String toStringFormat() {
         String result = "";
-        result += "OPolygon vertices:\n";
+        result += vertices.size() + "\n";
         for (Vertex v: vertices) {
-            String vdx_str = "";
-            if (v.dX != 1) {
-                vdx_str = "/" + v.dX;
-            }
-            String vdy_str = "";
-            if (v.dY != 1) {
-                vdy_str = "/" + v.dY;
-            }
-            result += v.nX + vdx_str + "," + v.nY + vdy_str + "\n";
+            result += v + "\n";
         }
         return result;
     }
