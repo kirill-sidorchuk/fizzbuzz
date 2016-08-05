@@ -57,7 +57,7 @@ public class SolutionParser {
 
     public static void main(String[] args) throws IOException {
         Solution solution = new SolutionParser().parse(new File(args[0]));
-        Solution rotated = solution.rotate(Math.PI);
+        Solution rotated = solution.rotate(-Math.PI);
         String s = rotated.toStringFormat();
         System.out.println(s);
     }
