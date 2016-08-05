@@ -20,7 +20,7 @@ public class Main {
         Problem problem = ProblemReader.read(new File(TEST_FILE_PATH, problemID + ".txt"));
         ProblemVisualizer.visualizeProblem(problem, problemID + ".png");
         PolygonHelper polygonHelper = new PolygonHelper();
-        for (Polygon polygon : problem.polygons) {
+        for (OPolygon polygon : problem.polygons) {
             polygonHelper.createBufferedImageFromVertices(polygon);
         }
 

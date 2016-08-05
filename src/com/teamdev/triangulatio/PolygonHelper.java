@@ -1,7 +1,7 @@
 package com.teamdev.triangulatio;
 
 import com.teamdev.Main;
-import com.teamdev.Polygon;
+import com.teamdev.OPolygon;
 import com.teamdev.Vertex;
 
 import javax.imageio.ImageIO;
@@ -17,7 +17,7 @@ import java.util.List;
 public class PolygonHelper {
     public static int counter = 0;
 
-    public void createBufferedImageFromVertices(Polygon polygon) {
+    public void createBufferedImageFromVertices(OPolygon polygon) {
         Point maxPoint = getMaxPoint(polygon);
         BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getX() * 500), (int) (maxPoint.getY() * 500), BufferedImage.TYPE_BYTE_GRAY);
         int polySize = polygon.vertices.size();
@@ -39,7 +39,7 @@ public class PolygonHelper {
         counter++;
     }
 
-    private Point getMaxPoint(Polygon polygon) {
+    private Point getMaxPoint(OPolygon polygon) {
         float maxX = 0;
         float maxY = 0;
         float vertexX = 0;
