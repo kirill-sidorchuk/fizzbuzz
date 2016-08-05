@@ -16,8 +16,7 @@ public class Solution {
         this.destinationPositions = destinationPositions;
     }
 
-    @Override
-    public String toString() {
+    public String toStringFormat() {
         String result = "";
         result += sourcePositions.size() + "\n";
         for (Vertex vertex : sourcePositions) {

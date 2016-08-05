@@ -83,7 +83,7 @@ public class Test {
         Solution solution = new Solution(sourcePositions, facets, destinationPositions);
         SolutionVisualizer.visualizeSolution(solution, SOLUTION_PNG_PATH);
 
-        System.out.println("-----------------\n" + solution);
+        System.out.println("-----------------\n" + solution.toStringFormat());
     }
 
     public static void main(String[] args) throws IOException {
