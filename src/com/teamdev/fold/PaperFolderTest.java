@@ -1,6 +1,7 @@
 package com.teamdev.fold;
 
-import java.awt.geom.Point2D;
+import com.teamdev.Vertex;
+
 import java.io.File;
 
 import static com.teamdev.fold.PaperFolder.cmpWithLine;
@@ -14,7 +15,7 @@ public class PaperFolderTest {
     public static final String FOLDER = "fold/";
 
     public static void main(String[] args) {
-        System.out.println(cmpWithLine(new FoldLine(new Point2D.Float(1, 1), new Point2D.Float(0, 0)), new Point2D.Float(0.3f, 0.2f)));
+        System.out.println(cmpWithLine(new FoldLine(new Vertex(1, 1, 1, 1), new Vertex(0, 1, 0, 1)), new Vertex(1, 2, 1, 2)));
 
         final PaperFolder paperFolder = new PaperFolder();
         final PaperVisualizer paperVisualizer = new PaperVisualizer();
@@ -30,7 +31,7 @@ public class PaperFolderTest {
         final Paper folded = paperFolder.fold(paper, foldLine);
         paperVisualizer.draw(folded, new File(FOLDER + "3.png"));
 
-        final FoldLine foldLine2 = new FoldLine(new Point2D.Float(1.0f, 0.0f), new Point2D.Float(0.5f, 0.5f));
+        final FoldLine foldLine2 = new FoldLine(new Vertex(1, 1, 0, 1), new Vertex(1, 2, 1, 2));
         paperVisualizer.draw(folded, foldLine2, new File(FOLDER + "4.png"));
 
         final Paper folded2 = paperFolder.fold(folded, foldLine2);
