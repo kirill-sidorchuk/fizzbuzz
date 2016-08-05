@@ -5,9 +5,15 @@ import java.io.IOException;
 
 public class Main {
 
-    private static final String TEST_FILE_PATH = "problems/initial/1.txt";
+    private static final String TEST_FILE_PATH = "problems/initial";
 
     public static void main(String[] args) throws IOException {
+        if( args.length < 2 ) {
+            System.out.println("problem id is expected in command line");
+            return;
+        }
 
+        Problem problem = ProblemReader.read(new File(TEST_FILE_PATH, args[1] + ".txt"));
+        problem.toString();
     }
 }
