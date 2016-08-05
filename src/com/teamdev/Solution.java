@@ -20,16 +20,16 @@ public class Solution {
         String result = "";
         result += sourcePositions.size() + "\n";
         for (Vertex vertex : sourcePositions) {
-            result += vertex.toString() + "\n";
+            result += vertex + "\n";
         }
 
         result += facets.size() + "\n";
         for (Facet facet : facets) {
-            result += facet.toString() + "\n";
+            result += facet + "\n";
         }
 
         for (Vertex vertex : destinationPositions) {
-            result += vertex.toString() + "\n";
+            result += vertex + "\n";
         }
         return result;
     }
