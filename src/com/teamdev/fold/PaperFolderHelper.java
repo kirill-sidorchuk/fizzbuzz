@@ -1,7 +1,9 @@
 package com.teamdev.fold;
 
-import java.awt.geom.Point2D;
+import com.teamdev.Vertex;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Vladislav Kovchug
@@ -9,16 +11,18 @@ import java.util.ArrayList;
 public class PaperFolderHelper {
 
     public FoldLine investigateFoldLine(){
-        return new FoldLine(new Point2D.Float(0.0f, 0.5f), new Point2D.Float(1.0f, 0.5f));
+        return new FoldLine(new Vertex(0, 1, 1, 2), new Vertex(1, 1, 1, 2));
     }
 
     public static Paper createInitialPaper(){
-        final ArrayList<Point2D.Float> vertices = new ArrayList<>();
-        vertices.add(new Point2D.Float(0,0));
-        vertices.add(new Point2D.Float(1,0));
-        vertices.add(new Point2D.Float(1,1));
-        vertices.add(new Point2D.Float(0,1));
-        return new Paper(vertices);
+        final ArrayList<Vertex> vertices = new ArrayList<>();
+        vertices.add(new Vertex(0,1, 0, 1));
+        vertices.add(new Vertex(1, 1, 0, 1));
+        vertices.add(new Vertex(1, 1, 1, 1));
+        vertices.add(new Vertex(0, 1, 1, 1));
+        final ArrayList<List<Vertex>> objects = new ArrayList<>();
+        objects.add(vertices);
+        return new Paper(objects);
     }
 
 }

@@ -1,8 +1,9 @@
 package com.teamdev.fold;
 
+import com.teamdev.Vertex;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,25 +24,25 @@ public class PaperVisualizer {
         gr.setPaint(Color.white);
         gr.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-        final List<Point2D.Float> vertices = paper.getVertices();
+        final List<Vertex> vertices = paper.getVertices().get(0);
         int pointsCount = vertices.size();
         int[] xPoints = new int[pointsCount];
         int[] yPoints = new int[pointsCount];
         for (int i = 0; i < pointsCount; i++) {
-            xPoints[i] = transformXCoordinate(vertices.get(i).getX());
-            yPoints[i] = transformYCoordinate(vertices.get(i).getY());
+            xPoints[i] = transformXCoordinate(vertices.get(i).getFloatX());
+            yPoints[i] = transformYCoordinate(vertices.get(i).getFloatY());
 
         }
 
         gr.setColor(Color.pink);
         gr.fillPolygon(xPoints, yPoints, pointsCount);
 
-        if(foldLine != null){
+        if (foldLine != null) {
             gr.setColor(Color.red);
             gr.setStroke(new BasicStroke(3));
 
-            gr.drawLine(transformXCoordinate(foldLine.getV1().getX()), transformYCoordinate(foldLine.getV1().getY()),
-                    transformXCoordinate(foldLine.getV2().getX()), transformYCoordinate(foldLine.getV2().getY()));
+            gr.drawLine(transformXCoordinate(foldLine.getV1().getFloatX()), transformYCoordinate(foldLine.getV1().getFloatY()),
+                    transformXCoordinate(foldLine.getV2().getFloatX()), transformYCoordinate(foldLine.getV2().getFloatY()));
         }
 
     }
@@ -63,12 +64,12 @@ public class PaperVisualizer {
         }
     }
 
-    private int transformXCoordinate(double value){
-        return (int) (value*SCALE) + PADDING;
+    private int transformXCoordinate(double value) {
+        return (int) (value * SCALE) + PADDING;
     }
 
-    private int transformYCoordinate(double value){
-        return IMAGE_HEIGHT - ((int) (value*SCALE) + PADDING);
+    private int transformYCoordinate(double value) {
+        return IMAGE_HEIGHT - ((int) (value * SCALE) + PADDING);
     }
 
 }

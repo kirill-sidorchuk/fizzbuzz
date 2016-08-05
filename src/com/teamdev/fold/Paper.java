@@ -1,23 +1,29 @@
 package com.teamdev.fold;
 
-import java.awt.geom.Point2D;
+import com.teamdev.Vertex;
+
 import java.util.List;
 
 /**
  * @author Vladislav Kovchug
  */
 public class Paper {
-    private List<Point2D.Float> vertices;
+    private List<List<Vertex>> vertices;
 
-    public Paper(List<Point2D.Float> vertices) {
+    public Paper(List<List<Vertex>> vertices) {
         this.vertices = vertices;
     }
 
-    public List<Point2D.Float> getVertices() {
+    public List<List<Vertex>> getVertices() {
         return vertices;
     }
 
-    public void setVertices(List<Point2D.Float> vertices) {
+    public void setVertices(List<List<Vertex>> vertices) {
         this.vertices = vertices;
     }
+
+    public void add(List<Vertex> polygon){
+        this.vertices.add(polygon);
+    }
+
 }
