@@ -21,19 +21,24 @@ import java.util.List;
 public class PolygonHelper {
     public static int counter = 0;
 
-    public void createBufferedImageFromVertices(OPolygon polygon) {
-        ImageData maxPoint = getMaxAndMinPoint(polygon);
-        BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()), (int) (maxPoint.getMaxY() - maxPoint.getMinY()), BufferedImage.TYPE_BYTE_GRAY);
-        int polySize = polygon.vertices.size();
-        Graphics2D graphics2D = bufferedImage.createGraphics();
-        int[] xpoint = new int[polySize];
-        int[] ypoint = new int[polySize];
-        List<Vertex> vertices = polygon.vertices;
-        for (int i = 0; i < polySize; i++) {
-            xpoint[i] = (int) (ProblemVisualizer.xToPlot(vertices.get(i).getFloatX()) - maxPoint.getMinX());
-            ypoint[i] = (int) (ProblemVisualizer.yToPlot(vertices.get(i).getFloatY()) - maxPoint.getMinY());
-        }
-        List<TrianglePolygon> trianglePolygons = new ArrayList<>();
+    public void createBufferedImageFromVertices(List<OPolygon> polygons) {
+        int sizeCounter = 1;
+        ImageData maxPoint = getMaxAndMinPoint(polygons);
+        if (maxPoint.getMaxX() < 500) sizeCounter = 3;
+        BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D graphics2DFinal = bufferedImageFinal.createGraphics();
+        for (OPolygon polygon : polygons) {
+            BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_BYTE_GRAY);
+            int polySize = polygon.vertices.size();
+            Graphics2D graphics2D = bufferedImage.createGraphics();
+            int[] xpoint = new int[polySize];
+            int[] ypoint = new int[polySize];
+            List<Vertex> vertices = polygon.vertices;
+            for (int i = 0; i < polySize; i++) {
+                xpoint[i] = (int) (ProblemVisualizer.xToPlot(vertices.get(i).getFloatX()) - maxPoint.getMinX()) * sizeCounter;
+                ypoint[i] = (int) (ProblemVisualizer.yToPlot(vertices.get(i).getFloatY()) - maxPoint.getMinY()) * sizeCounter;
+            }
+/*        List<TrianglePolygon> trianglePolygons = new ArrayList<>();
         System.out.println(getPolygonArea(xpoint, ypoint, polySize, trianglePolygons));
         for (int i = 0; i < trianglePolygons.size(); i++) {
             int[] polyX = new int[3];
@@ -54,17 +59,36 @@ public class PolygonHelper {
                 graphics2D.setColor(Color.blue);
                 graphics2D.fillPolygon(polyX, polyY, 3);
             }
+        }*/
+            graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+            if (counter % 3 == 0) {
+                graphics2DFinal.setColor(Color.red);
+                graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+            } else if (counter % 3 == 1) {
+                graphics2DFinal.setColor(Color.green);
+                graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+            } else {
+                graphics2DFinal.setColor(Color.blue);
+                graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+            }
+            graphics2D.fillPolygon(xpoint, ypoint, polySize);
+            File file = new File("poly/" + Main.task + "." + counter + ".png");
+            try {
+                ImageIO.write(bufferedImage, "png", file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            counter++;
         }
-        File file = new File("poly/" + Main.task + "." + counter + ".png");
+        File file = new File("poly/" + Main.task + "." + "final" + ".png");
         try {
-            ImageIO.write(bufferedImage, "png", file);
+            ImageIO.write(bufferedImageFinal, "png", file);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        counter++;
     }
 
-    private ImageData getMaxAndMinPoint(OPolygon polygon) {
+    private ImageData getMaxAndMinPoint(List<OPolygon> polygons) {
         float maxX = 0;
         float maxY = 0;
         //todo: change this value ASAP
@@ -72,21 +96,22 @@ public class PolygonHelper {
         float minY = 1000000;
         float vertexX = 0;
         float vertexY = 0;
-
-        for (Vertex vertex : polygon.vertices) {
-            vertexX = ProblemVisualizer.xToPlot(vertex.getFloatX());
-            vertexY = ProblemVisualizer.yToPlot(vertex.getFloatY());
-            if (vertexX > maxX) {
-                maxX = vertexX;
-            }
-            if (vertexY > maxY) {
-                maxY = vertexY;
-            }
-            if (vertexX < minX) {
-                minX = vertexX;
-            }
-            if (vertexY < minY) {
-                minY = vertexY;
+        for (OPolygon polygon : polygons) {
+            for (Vertex vertex : polygon.vertices) {
+                vertexX = ProblemVisualizer.xToPlot(vertex.getFloatX());
+                vertexY = ProblemVisualizer.yToPlot(vertex.getFloatY());
+                if (vertexX > maxX) {
+                    maxX = vertexX;
+                }
+                if (vertexY > maxY) {
+                    maxY = vertexY;
+                }
+                if (vertexX < minX) {
+                    minX = vertexX;
+                }
+                if (vertexY < minY) {
+                    minY = vertexY;
+                }
             }
         }
         return new ImageData(maxX, maxY, minX, minY);
@@ -94,7 +119,7 @@ public class PolygonHelper {
 
     public float getPolygonArea(int[] xpoint, int[] ypoint, int polySize, List<TrianglePolygon> trianglePolygons) {
         trianglePolygons.addAll(getTriangles(createTriangulationPoint(xpoint, ypoint, polySize)));
-        double square = 0;
+        float square = 0;
         for (TrianglePolygon polygon : trianglePolygons) {
             double x1 = polygon.x1;
             double x2 = polygon.x2;
@@ -113,7 +138,7 @@ public class PolygonHelper {
                 System.out.println("Площадь: " + square);
             }
         }
-        return 0;
+        return square;
     }
 
     private TriangulationPoint createTriangulationPoint(int[] xpoint, int[] ypoint, int polySize) {

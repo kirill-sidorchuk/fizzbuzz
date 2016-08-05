@@ -46,12 +46,6 @@ public class Vertex {
         this.dYBig = dY;
     }
 
-    public Vertex(long nX, long dX, long nY, long dY) {
-        this.nX = nX;
-        this.dX = dX;
-        this.nY = nY;
-        this.dY = dY;
-    }
 
     public Vertex(long nX, long dX, long nY, long dY) {
         this.nX = nX;
