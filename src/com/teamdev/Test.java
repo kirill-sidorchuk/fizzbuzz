@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Test {
 
-    private static final String TEST_FILE_PATH = "problems/initial/1.txt";
-    private static final String TEST_PNG_PATH = "problems/initial/1.png";
+    private static final String TEST_FILE_PATH = "problems/our/g_utc0_spec.txt";
+    private static final String TEST_PNG_PATH = "problems/our/g_spec.png";
 
     private static final String SOLUTION_PNG_PATH = "solutions/initial/test.png";
 
