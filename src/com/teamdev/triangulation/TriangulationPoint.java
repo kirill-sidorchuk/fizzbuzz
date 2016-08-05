@@ -7,6 +7,7 @@ public class TriangulationPoint {
     public int x;
     public int y;
     public TriangulationPoint nextPoint;
+    public int counter;
 
 
     public TriangulationPoint getNextPoint() {
