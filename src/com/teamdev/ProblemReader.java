@@ -10,7 +10,7 @@ import java.util.List;
 public class ProblemReader {
 
     public static Problem read(File file) throws IOException {
-        List<String> lines = readLines(file);
+        List<String> lines = Utils.readLines(file);
 
         List<OPolygon> polygons = new ArrayList<>();
 
@@ -44,15 +44,4 @@ public class ProblemReader {
     }
 
 
-    private static List<String> readLines(File file) throws IOException {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                // process the line.
-                lines.add(line);
-            }
-        }
-        return lines;
-    }
 }
