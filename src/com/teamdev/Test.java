@@ -6,6 +6,7 @@ import java.io.IOException;
 public class Test {
 
     private static final String TEST_FILE_PATH = "problems/initial/1.txt";
+    private static final String TEST_PNG_PATH = "problems/initial/1.png";
 
     private static void problemReadingTest() throws IOException {
         File testFile = new File(TEST_FILE_PATH);
@@ -22,7 +23,15 @@ public class Test {
         }
     }
 
+    private static void visualizationTest() throws IOException {
+        File testFile = new File(TEST_FILE_PATH);
+        Problem problem = ProblemReader.read(testFile);
+        ProblemVisualizer.visualizeProblem(problem, TEST_PNG_PATH);
+    }
+
     public static void main(String[] args) throws IOException {
         problemReadingTest();
+
+        visualizationTest();
     }
 }
