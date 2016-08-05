@@ -31,6 +31,8 @@ public class Test {
         File testFile = new File(TEST_FILE_PATH);
         Problem problem = ProblemReader.read(testFile);
         ProblemVisualizer.visualizeProblem(problem, TEST_PNG_PATH);
+        System.out.println("--------------------------------");
+        System.out.println(problem.toStringFormat());
     }
 
     private static void solutionVisualizationTest() throws IOException {
