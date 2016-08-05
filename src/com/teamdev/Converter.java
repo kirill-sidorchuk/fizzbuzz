@@ -10,13 +10,38 @@ import java.util.List;
  */
 public class Converter {
 
+    private static class Fraction{
+        BigDecimal n;
+        BigDecimal d;
+
+        public Fraction(BigDecimal n, BigDecimal d) {
+            this.n = n;
+            this.d = d;
+        }
+    }
+
     private static BigDecimal gcd(BigDecimal a, BigDecimal b){
-        while(a.compareTo(BigDecimal.ZERO) > 0 && b.compareTo(BigDecimal.ZERO) > 0) {
+        while(a.abs().compareTo(BigDecimal.ZERO) > 0 && b.abs().compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal c = b;
             b = a.remainder(b);
             a = c;
         }
-        return a.add(b);
+        return a.abs().add(b);
+    }
+
+    private static void simplifyFraction(Fraction f){
+        BigDecimal multiplierX = gcd(f.n, f.d);
+        f.n = f.n.divide(multiplierX);
+        f.d = f.d.divide(multiplierX);
+    }
+
+
+    private static Fraction subFraction(Fraction f1, Fraction f2){
+        BigDecimal n = f1.n.multiply(f2.d).subtract(f2.n.multiply(f1.d));
+        BigDecimal d = f1.d.multiply(f2.d);
+        Fraction resF = new Fraction(n, d);
+        simplifyFraction(resF);
+        return resF;
     }
 
     public static VertexShift calculateVertexShifts(List<Vertex> list){
@@ -36,11 +61,14 @@ public class Converter {
         dYShift = list.stream().min(compY).map(vertex -> vertex.dYBig).get();
 
         for (Vertex vertex : list){
-            vertex.nX = vertex.nXBig.subtract(nXShift).longValue();
-            vertex.nY = vertex.nYBig.subtract(nYShift).longValue();
+            Fraction x = subFraction(new Fraction(vertex.nXBig, vertex.dXBig), new Fraction(nXShift, dXShift));
+            Fraction y = subFraction(new Fraction(vertex.nYBig, vertex.dYBig), new Fraction(nYShift, dYShift));
 
-            vertex.dX = vertex.dXBig.longValue();
-            vertex.dY = vertex.dYBig.longValue();
+            vertex.nX = x.n.longValue();
+            vertex.dX = x.d.longValue();
+
+            vertex.nY = y.n.longValue();
+            vertex.dY = y.d.longValue();
 
             vertex.shifted = true;
         }
@@ -60,9 +88,29 @@ public class Converter {
         problem.vertexShift = Converter.calculateVertexShifts(list);
     }
 
+//private static void printVertex(){}
 
     public static void main(String[] args){
-        System.out.println(gcd(new BigDecimal(8),new BigDecimal(12)));
+        Vertex v1 = new Vertex(new BigDecimal(1), new BigDecimal(2), new BigDecimal(-2), new BigDecimal(4));
+        Vertex v2 = new Vertex(new BigDecimal(2), new BigDecimal(3), new BigDecimal(2), new BigDecimal(4));
+
+        Fraction f = subFraction(new Fraction(v1.nXBig, v1.dXBig), new Fraction(v2.nXBig, v2.dXBig));
+
+        System.out.println(f.n);
+        System.out.println(f.d);
+
+        /*List<Vertex> list = new ArrayList<>();
+        list.add(v1);
+        list.add(v2);
+
+        VertexShift vertexShift = calculateVertexShifts(list);
+
+        System.out.println(vertexShift.nX);
+        System.out.println(vertexShift.dX);
+        System.out.println(vertexShift.nY);
+        System.out.println(vertexShift.dY);
+
+        System.out.println(gcd(new BigDecimal(8), new BigDecimal(12)));*/
     }
 
 
