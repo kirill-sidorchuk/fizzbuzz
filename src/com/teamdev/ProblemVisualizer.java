@@ -31,7 +31,7 @@ public class ProblemVisualizer extends Frame {
     }
 
     private static void plotPolygons(Graphics2D gr, Problem problem) {
-        for (Polygon polygon : problem.polygons) {
+        for (OPolygon polygon : problem.polygons) {
             gr.setColor(Color.black);
 
             int pointsCount = polygon.vertices.size();
@@ -89,7 +89,7 @@ public class ProblemVisualizer extends Frame {
     private static void plotVertices(Graphics2D gr, Problem problem) {
         gr.setFont(new Font("TimesRoman", Font.BOLD, 20));
 
-        for (Polygon polygon : problem.polygons) {
+        for (OPolygon polygon : problem.polygons) {
             for (int i = 0; i < polygon.vertices.size(); i++) {
                 Vertex vertex = polygon.vertices.get(i);
                 gr.drawString(Integer.toString(i), xToPlot(vertex.getFloatX()), yToPlot(vertex.getFloatY()));

@@ -13,7 +13,7 @@ public class Test {
         Problem problem = ProblemReader.read(testFile);
 
         System.out.println("Polygons:");
-        for (Polygon p : problem.polygons) {
+        for (OPolygon p : problem.polygons) {
             System.out.println(p.toString());
         }
 
