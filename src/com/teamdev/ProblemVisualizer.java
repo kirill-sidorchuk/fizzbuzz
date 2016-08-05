@@ -15,7 +15,7 @@ public class ProblemVisualizer extends Frame {
 
     public static final float MAX_SIZE = (float) Math.sqrt(2);
 
-    private static int xToPlot(float x) {
+    public static int xToPlot(float x) {
         if (x < 0 || x > MAX_SIZE) {
             throw new IllegalArgumentException("value of x expected to be in range [0:sqrt(2)], actual value: " + x);
         }
@@ -23,7 +23,7 @@ public class ProblemVisualizer extends Frame {
         return borderWidth + (int) (GRAPHIC_WIDTH * x / MAX_SIZE);
     }
 
-    private static int yToPlot(float y) {
+    public static int yToPlot(float y) {
         if (y < 0 || y > MAX_SIZE) {
             throw new IllegalArgumentException("value of y expected to be in range [0:sqrt(2)], actual value: " + y);
         }
