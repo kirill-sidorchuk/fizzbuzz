@@ -12,12 +12,12 @@ public class ProblemReader {
     public static Problem read(File file) throws IOException {
         List<String> lines = readLines(file);
 
-        List<Polygon> polygons = new ArrayList<>();
+        List<OPolygon> polygons = new ArrayList<>();
 
         int nPolys = Integer.parseInt(lines.get(0).trim());
         int pos = 1;
         for( int p=0; p<nPolys; ++p) {
-            Polygon polygon = new Polygon();
+            OPolygon polygon = new OPolygon();
             int nVerts = Integer.parseInt(lines.get(pos).trim());
             pos++;
 

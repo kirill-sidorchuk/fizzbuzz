@@ -11,17 +11,20 @@ public class Main {
     public static int task;
 
     public static void main(String[] args) throws IOException {
-        if( args.length < 2 ) {
+        if( args.length < 1 ) {
             System.out.println("problem id is expected in command line");
             return;
         }
         task = Integer.parseInt(args[0]);
-        Problem problem = ProblemReader.read(new File(TEST_FILE_PATH, args[0] + ".txt"));
+        String problemID = args[0];
+        Problem problem = ProblemReader.read(new File(TEST_FILE_PATH, problemID + ".txt"));
+        ProblemVisualizer.visualizeProblem(problem, problemID + ".png");
         PolygonHelper polygonHelper = new PolygonHelper();
         for (Polygon polygon : problem.polygons) {
             polygonHelper.createBufferedImageFromVertices(polygon);
         }
 
     //    System.out.println(problem.toString());
+
     }
 }
