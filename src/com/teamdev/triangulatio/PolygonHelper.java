@@ -26,9 +26,11 @@ public class PolygonHelper {
         int[] ypoint = new int[polySize];
         List<Vertex> vertices = polygon.vertices;
         for (int i = 0; i < polySize; i++) {
-            xpoint[i] = (int) vertices.get(i).getFloatX() * 500;
-            ypoint[i] = (int) vertices.get(i).getFloatY() * 500;
+            xpoint[i] = (int) (vertices.get(i).getFloatX() * 500);
+            ypoint[i] = (int) (vertices.get(i).getFloatY() * 500);
         }
+        graphics2D.setColor(new Color(255,0,0));
+        graphics2D.setBackground(new Color(255,255,255));
         graphics2D.drawPolygon(xpoint, ypoint, polySize);
         File file = new File("poly/" + Main.task + "." + counter + ".png");
         try {
