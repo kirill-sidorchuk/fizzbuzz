@@ -108,7 +108,7 @@ public class Vertex {
         double rx = R[0] * fx + R[1] * fy;
         double ry = R[2] * fx + R[3] * fy;
 
-        final int ACC = 10000;
+        final long ACC = 80000000;
         return new Vertex( Math.round(rx*ACC), ACC, Math.round(ry*ACC), ACC);
     }
 
@@ -120,12 +120,46 @@ public class Vertex {
             y += v.getFloatY();
         }
 
-        final int ACC = 1000;
-        int den = ACC * list.size();
+        final long ACC = 10000;
+        long den = ACC * list.size();
 
         return new Vertex(Math.round(ACC*x), den, Math.round(y*ACC), den);
     }
 
+    public long common_divider(long a, long b) {
+        if( (a % 2) == 0 && (b % 2) == 0 ) return 2;
+        if( (a % 3) == 0 && (b % 3) == 0 ) return 3;
+        if( (a % 5) == 0 && (b % 5) == 0 ) return 5;
+        if( (a % 7) == 0 && (b % 7) == 0 ) return 7;
+        if( (a % 11) == 0 && (b % 11) == 0 ) return 11;
+        if( (a % 13) == 0 && (b % 13) == 0 ) return 13;
+        if( (a % 17) == 0 && (b % 17) == 0 ) return 17;
+        return 1;
+    }
+
+    public void normalize() {
+        if( nX == 0 ) {
+            dX = 1;
+        }
+        else
+            for( int i=0; i<20; ++i) {
+                long d = common_divider(nX, dX);
+                if (d == 1) break;
+                nX /= d;
+                dX /= d;
+            }
+
+        if( nY == 0 ) {
+            dY = 1;
+        }
+        else
+            for( int i=0; i<20; ++i) {
+                long d = common_divider(nY, dY);
+                if (d == 1) break;
+                nY /= d;
+                dY /= d;
+            }
+    }
 
     private void checkShifted(){
         if (!shifted) {

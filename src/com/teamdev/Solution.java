@@ -63,4 +63,15 @@ public class Solution {
         }
         return new Solution(sourcePositions, facets, newDst);
     }
+
+    public Solution normalize() {
+        for (Vertex vertex : sourcePositions) {
+            vertex.normalize();
+        }
+
+        for (Vertex vertex : destinationPositions) {
+            vertex.normalize();
+        }
+        return this;
+    }
 }
