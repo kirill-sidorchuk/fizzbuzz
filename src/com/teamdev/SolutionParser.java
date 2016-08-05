@@ -22,6 +22,7 @@ public class SolutionParser {
             vx.makeValidFromSimpleFraction();
             vertices.add(vx);
         }
+//        Converter.calculateVertexShifts(vertices);
 
         // reading facets
         List<Facet> facets = new ArrayList<>();

@@ -42,17 +42,17 @@ public class Solution {
         R[2] = -R[1];
         R[3] = R[0];
 
-        List<Vertex> newSrc = new ArrayList<>();
-        for (Vertex vertex : sourcePositions) {
-            newSrc.add(vertex.rotate(R));
-        }
+//        List<Vertex> newSrc = new ArrayList<>();
+//        for (Vertex vertex : sourcePositions) {
+//            newSrc.add(vertex.rotate(R));
+//        }
 
         List<Vertex> newDst = new ArrayList<>();
         for (Vertex vertex : destinationPositions) {
             newDst.add(vertex.rotate(R));
         }
 
-        return new Solution(newSrc, facets, newDst);
+        return new Solution(sourcePositions, facets, newDst);
     }
 
 }
