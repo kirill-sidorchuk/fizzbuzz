@@ -13,7 +13,7 @@ public class ProblemVisualizer extends Frame {
     public static final int GRAPHIC_WIDTH = 600;
     public static final int GRAPHIC_HEIGHT = 600;
 
-    private static int xToPlot(float x) {
+    public static int xToPlot(float x) {
         if (x < 0 || x > 1.01) {
             throw new IllegalArgumentException("value of x expected to be in range [0:1], actual value: " + x);
         }
@@ -21,7 +21,7 @@ public class ProblemVisualizer extends Frame {
         return borderWidth + (int) (GRAPHIC_WIDTH * x);
     }
 
-    private static int yToPlot(float y) {
+    public static int yToPlot(float y) {
         if (y < 0 || y > 1.01) {
             throw new IllegalArgumentException("value of y expected to be in range [0:1], actual value: " + y);
         }

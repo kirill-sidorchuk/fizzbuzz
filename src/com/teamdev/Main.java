@@ -1,6 +1,6 @@
 package com.teamdev;
 
-import com.teamdev.triangulatio.PolygonHelper;
+import com.teamdev.triangulation.PolygonHelper;
 
 import java.io.File;
 import java.io.IOException;
