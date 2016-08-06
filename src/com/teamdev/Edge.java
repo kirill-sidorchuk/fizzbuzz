@@ -1,5 +1,6 @@
 package com.teamdev;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,22 @@ public class Edge {
         return i0 == e.i0 || i0 == e.i1 || i1 == e.i0 || i1 == e.i1;
     }
 
-    public boolean intersects(Edge e, List<Vertex> vertices) {
+    public boolean containsPoint(Vertex X, List<Vertex> vertices) {
+        Vertex A = vertices.get(i0);
+        Vertex B = vertices.get(i1);
+
+        Vertex BA = B.sub(A);
+        Vertex XA = X.sub(A);
+
+        if( XA.vect_prod_z(BA).n != 0 ) return false;
+
+        Fraction s = XA.scalarMul(BA);
+        if( s.n < 0 ) return false;
+
+        return XA.normSquared().compareTo(BA.normSquared()) <= 0;
+    }
+
+    public Vertex getIntersection(Edge e, List<Vertex> vertices) {
         Vertex A = vertices.get(i0);
         Vertex B = vertices.get(i1);
         Vertex C = vertices.get(e.i0);
@@ -50,7 +66,32 @@ public class Edge {
 
         Vertex BA = B.sub(A);
         Vertex DC = D.sub(C);
-//        A.vect_prod_z(DC)
-        return false;
+
+        Fraction den = BA.vect_prod_z(DC);
+        if( den.n == 0 ) {
+            // coplanar lines
+            return null;
+        }
+
+        Fraction alpha = A.vect_prod_z(DC).div(den).inv();
+        if( alpha.n < 0 ) return null;
+
+        if( alpha.n >= alpha.d ) return null;
+
+        return A.add(BA.mul(alpha));
+    }
+
+    public static void main(String[] args) {
+        List<Vertex> vertices = new ArrayList<>();
+        vertices.add(new Vertex(0,1, -1,1));
+        vertices.add(new Vertex(1,1, 0,1));
+        vertices.add(new Vertex(0,1, 1,1));
+        vertices.add(new Vertex(-1,1, 0,1));
+
+        Edge e1 = new Edge(0,2, false);
+        Edge e2 = new Edge(1,3, false);
+
+        Vertex intersection = e1.getIntersection(e2, vertices);
+        intersection.toString();
     }
 }

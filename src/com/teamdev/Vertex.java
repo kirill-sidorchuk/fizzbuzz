@@ -42,6 +42,7 @@ public class Vertex {
     public Vertex(Fraction x, Fraction y) {
         this.x = x;
         this.y = y;
+        this.shifted = true;
     }
 
     public Vertex(BigDecimal nX, BigDecimal dX, BigDecimal nY, BigDecimal dY) {
@@ -119,8 +120,16 @@ public class Vertex {
         return new Vertex(x.sub(vertex.x), y.sub(vertex.y));
     }
 
+    public Vertex add(Vertex v) {
+        return new Vertex(x.add(v.x), y.add(v.y));
+    }
+
     public Vertex mul(Vertex v) {
         return new Vertex(x.mul(v.x), y.mul(v.y));
+    }
+
+    public Vertex mul(Fraction f) {
+        return new Vertex(x.mul(f), y.mul(f));
     }
 
     public Fraction normSquared() {
@@ -129,6 +138,10 @@ public class Vertex {
 
     public Fraction vect_prod_z(Vertex v) {
         return x.mul(v.y).sub(y.mul(v.x));
+    }
+
+    public Fraction scalarMul(Vertex v) {
+        return x.mul(v.x).add(y.mul(v.y));
     }
 
     public float getSinus(Vertex v) {

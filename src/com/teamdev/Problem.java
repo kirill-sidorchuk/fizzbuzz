@@ -140,7 +140,19 @@ public class Problem {
         }
 
         // checking for intersections
+        int count = 0;
+        for( int i=0; i<origami.edges.size()-1; ++i) {
+            Edge ei = origami.edges.get(i);
+            for( int j=i+1; j<origami.edges.size(); ++j ) {
+                Edge ej = origami.edges.get(j);
+                Vertex intersection = ei.getIntersection(ej, origami.vertices);
+                if( intersection != null ) {
+                    count ++;
+                }
+            }
+        }
 
+        System.out.println("Count of intersections = " + count);
 
         return origami;
     }

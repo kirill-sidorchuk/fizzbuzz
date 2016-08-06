@@ -100,4 +100,5 @@ public class Fraction implements Comparable<Fraction> {
     public double getDoubleValue() {
         return (double)n / (double)d;
     }
+
 }
