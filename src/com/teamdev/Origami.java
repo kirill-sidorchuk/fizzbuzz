@@ -20,6 +20,14 @@ public class Origami {
         Set<Integer> set = new HashSet<>();
         boolean abandoned = false;
 
+        public Path() {
+        }
+
+        public Path(List<Integer> indexes) {
+            this.indexes = indexes;
+            set = new HashSet<>(indexes);
+        }
+
         public boolean contains(int i) {
             return set.contains(i);
         }
@@ -53,7 +61,7 @@ public class Origami {
         }
     }
 
-    public void findFacets() {
+    public void findFacetsOld() {
         // searching for facets
         Set<Path> foundFacets = new HashSet<>();
         for( int iStart=0; iStart<vertices.size(); ++iStart) {
@@ -61,7 +69,7 @@ public class Origami {
                 continue;
             Path mainPath = new Path();
             Set<Path> addedPaths = new HashSet<>();
-            traverse(iStart, -1, mainPath, vertices, addedPaths);
+            traverseOld(iStart, -1, mainPath, vertices, addedPaths);
             if (!mainPath.abandoned) addedPaths.add(mainPath);
 
             // selecting tightest facet
@@ -80,9 +88,76 @@ public class Origami {
         }
         System.out.printf("" + foundFacets.size());
 
+        // converting
+        for (Path p : foundFacets) {
+            Facet facet = new Facet(p.indexes);
+            facets.add(facet);
+        }
+
     }
 
-    private void traverse(int iStart, int iFromWhere, Path path, List<Vertex> vertices, Set<Path> foundFacets) {
+    public void findFacets() {
+
+        Set<Path> paths = new HashSet<>();
+
+        for( int startIndex=0; startIndex<vertices.size(); ++startIndex) {
+
+            List<Integer> path = new ArrayList<>();
+            path.add(startIndex);
+
+            int i = startIndex;
+            Vertex S = vertices.get(i);
+            Edge startEdge = S.edges.get(0);
+
+            boolean found = true;
+
+            while (true)
+            {
+                int iN = startEdge.otherIndex(i);
+                path.add(iN);
+                Vertex N = vertices.get(iN);
+
+                Vertex NS = N.sub(S);
+
+                // search for left turn
+                float maxSinus = -1;
+                Edge bestEdge = null;
+                Vertex bestA = null;
+                for (Edge edge : N.edges) {
+                    if( edge.equals(startEdge)) continue;
+
+                    int iN2 = edge.otherIndex(iN);
+                    Vertex A = vertices.get(iN2);
+                    Vertex AN = A.sub(N);
+                    float sinus = NS.getSinus(AN);
+                    if (sinus < 0) continue;
+                    if (sinus > maxSinus) {
+                        maxSinus = sinus;
+                        bestEdge = edge;
+                        bestA = A;
+                    }
+                }
+
+                if( bestEdge == null ) {
+                    found = false;
+                    break;
+                }
+
+                i = iN;
+                S = N;
+                N = bestA;
+                startEdge = bestEdge;
+
+                if( i == startIndex ) break;
+            }
+
+            if( found ) {
+                paths.add(new Path(path));
+            }
+        }
+    }
+
+    private void traverseOld(int iStart, int iFromWhere, Path path, List<Vertex> vertices, Set<Path> foundFacets) {
 
         // adding self to set
         if( path.contains(iStart) ) return;
@@ -100,14 +175,14 @@ public class Origami {
         if( nextEdges.size() == 1) {
             Edge nextEdge = nextEdges.get(0);
             int nextI = nextEdge.i0 == iStart ? nextEdge.i1 : nextEdge.i0;
-            traverse(nextI, iStart, path, vertices, foundFacets);
+            traverseOld(nextI, iStart, path, vertices, foundFacets);
         }
         else {
             path.abandoned = true;
             for (Edge nextEdge : nextEdges) {
                 Path pathCopy = path.copy();
                 int nextI = nextEdge.i0 == iStart ? nextEdge.i1 : nextEdge.i0;
-                traverse(nextI, iStart, pathCopy, vertices, foundFacets);
+                traverseOld(nextI, iStart, pathCopy, vertices, foundFacets);
                 foundFacets.add(pathCopy);
             }
         }

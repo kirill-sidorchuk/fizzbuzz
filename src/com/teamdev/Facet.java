@@ -23,4 +23,22 @@ public class Facet {
         }
         return result;
     }
+
+    public float[] getXs(List<Vertex> vertices) {
+        float[] xs = new float[vertexIndices.size()];
+        for( int i=0; i<vertexIndices.size(); ++i) {
+            int vertIndex = vertexIndices.get(i);
+            xs[i] = vertices.get(vertIndex).getFloatX();
+        }
+        return xs;
+    }
+
+    public float[] getYs(List<Vertex> vertices) {
+        float[] ys = new float[vertexIndices.size()];
+        for( int i=0; i<vertexIndices.size(); ++i) {
+            int vertIndex = vertexIndices.get(i);
+            ys[i] = vertices.get(vertIndex).getFloatY();
+        }
+        return ys;
+    }
 }

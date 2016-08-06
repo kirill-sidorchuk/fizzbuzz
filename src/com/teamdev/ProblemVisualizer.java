@@ -24,6 +24,20 @@ public class ProblemVisualizer extends Frame {
         return borderWidth + (int) (GRAPHIC_WIDTH * x / MAX_SIZE);
     }
 
+    public static int[] xToPlot(float[] xs) {
+        int[] ixs = new int[xs.length];
+        for(int i=0; i<xs.length; ++i)
+            ixs[i] = xToPlot(xs[i]);
+        return ixs;
+    }
+
+    public static int[] yToPlot(float[] ys) {
+        int[] iys = new int[ys.length];
+        for(int i=0; i<ys.length; ++i)
+            iys[i] = yToPlot(ys[i]);
+        return iys;
+    }
+
     public static int yToPlot(float y) {
         if (y < 0 || y > MAX_SIZE) {
             throw new IllegalArgumentException("value of y expected to be in range [0:sqrt(2)], actual value: " + y);
@@ -144,11 +158,25 @@ public class ProblemVisualizer extends Frame {
         gr.setPaint(Color.white);
         gr.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 
+        plotFacets(gr, origami);
+
         plotLines(gr, origami);
 
         plotGrid(gr);
 
         plotVertices(gr, origami);
+    }
+
+    private static void plotFacets(Graphics2D gr, Origami origami) {
+        for (Facet facet : origami.facets) {
+            gr.setColor(new Color((int)(Math.random()*255), (int)(Math.random()*255), (int)(Math.random()*255)));
+
+            float[] fxs = facet.getXs(origami.vertices);
+            float[] fys = facet.getYs(origami.vertices);
+
+            gr.fillPolygon(xToPlot(fxs),yToPlot(fys), fxs.length);
+        }
+
     }
 
     public static void visualizeProblem(Problem problem, String outputFileName) throws IOException {
@@ -162,7 +190,6 @@ public class ProblemVisualizer extends Frame {
 
     public static void visualizeOrigami(Origami origami, String outputFileName) throws IOException {
         BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
-        java.util.List<Vertex> vertices = origami.vertices;
         drawGraphics(image, origami);
         ImageIO.write(image, "png", new File(outputFileName));
     }
@@ -182,7 +209,10 @@ public class ProblemVisualizer extends Frame {
 
     private static void visualizeOrigamiFile(File file) throws IOException {
         try {
+            System.out.println(file.getName());
             Origami origami = ProblemReader.read(file).getOrigami();
+            System.out.println("searching for facets");
+            origami.findFacets();
             visualizeOrigami(origami, file.getAbsolutePath().replace(".txt", ".png"));
         } catch (RuntimeException e) {
             System.out.println("Failed to visualize: " + file.getName());
@@ -191,7 +221,7 @@ public class ProblemVisualizer extends Frame {
     }
 
     public static void main(String[] args) throws IOException {
-//        visualizeOrigamiFile(new File("problems/initial/10.txt"));
-        visualizeFolder(args[0]);
+        visualizeOrigamiFile(new File("problems/initial/10.txt"));
+//        visualizeFolder(args[0]);
     }
 }

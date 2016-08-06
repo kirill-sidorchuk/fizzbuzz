@@ -110,4 +110,7 @@ public class Edge {
         intersection.toString();
     }
 
+    public int otherIndex(int i) {
+        return i0 == i ? i1 : i0;
+    }
 }
