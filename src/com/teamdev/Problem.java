@@ -94,7 +94,18 @@ public class Problem {
         origami.vertices.addAll(polygon.vertices);
         origami.nContourVertices = polygon.vertices.size();
 
-        // adding hidden vertices
+        // adding external edges
+        for( int i=0; i<polygon.vertices.size(); ++i) {
+            int i1 = (i + 1) % polygon.vertices.size();
+            Edge e = new Edge(i, i1, true);
+
+            // adding links
+            origami.vertices.get(i).addEdge(e);
+            origami.vertices.get(i1).addEdge(e);
+            origami.edges.add(e);
+        }
+
+        // adding hidden vertices and internal edges
         for (LineSegment seg : lineSegments) {
             int i1 = origami.vertices.indexOf(seg.v1);
             if( i1 == -1 ) {
@@ -104,6 +115,7 @@ public class Problem {
             if( i2 != -1 ) {
                 origami.vertices.add(seg.v2);
             }
+
 
         }
 

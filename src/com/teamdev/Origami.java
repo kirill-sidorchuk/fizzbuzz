@@ -11,6 +11,6 @@ public class Origami {
     int nContourVertices;
     List<Vertex> vertices = new ArrayList<>();
     List<Facet> facets = new ArrayList<>();
-
+    List<Edge> edges = new ArrayList<>();
 
 }

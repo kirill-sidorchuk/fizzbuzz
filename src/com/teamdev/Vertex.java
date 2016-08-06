@@ -3,12 +3,15 @@ package com.teamdev;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by kirill.sidorchuk on 8/5/2016.
  */
 public class Vertex {
+
+    public List<Edge> edges;
 
     boolean shifted = false;
 
@@ -31,6 +34,11 @@ public class Vertex {
         dXBig = new BigDecimal(1);
         nYBig = new BigDecimal(0);
         dYBig = new BigDecimal(1);
+    }
+
+    public Vertex(Fraction x, Fraction y) {
+        this.x = x;
+        this.y = y;
     }
 
     public Vertex(BigDecimal nX, BigDecimal dX, BigDecimal nY, BigDecimal dY) {
@@ -81,13 +89,15 @@ public class Vertex {
         shifted = true;
     }
 
-    public Vertex translate(Vertex v) {
-        long _nX = x.n * v.x.d + v.x.n * x.d;
-        long _dX = v.x.d * x.d;
-        long _nY = y.n * v.y.d + v.y.n * y.d;
-        long _dY = v.y.d * y.d;
+    public void addEdge(Edge e) {
+        if( edges == null ) edges = new ArrayList<>();
+        edges.add(e);
+    }
 
-        return new Vertex(_nX, _dX, _nY, _dY);
+    public Vertex translate(Vertex v) {
+        Fraction _x = x.add(v.x);
+        Fraction _y = y.add(v.y);
+        return new Vertex(_x, _y).normalize();
         // todo add big decimals
     }
 
@@ -99,7 +109,7 @@ public class Vertex {
         double ry = R[2] * fx + R[3] * fy;
 
         final long ACC = 80000000;
-        return new Vertex( Math.round(rx*ACC), ACC, Math.round(ry*ACC), ACC);
+        return new Vertex( Math.round(rx*ACC), ACC, Math.round(ry*ACC), ACC).normalize();
     }
 
     public static Vertex average(List<Vertex> list) {
@@ -113,40 +123,13 @@ public class Vertex {
         final long ACC = 10000;
         long den = ACC * list.size();
 
-        return new Vertex(Math.round(ACC*x), den, Math.round(y*ACC), den);
+        return new Vertex(Math.round(ACC*x), den, Math.round(y*ACC), den).normalize();
     }
 
-    public long common_divider(long a, long b) {
-        if( (a % 2) == 0 && (b % 2) == 0 ) return 2;
-        if( (a % 3) == 0 && (b % 3) == 0 ) return 3;
-        if( (a % 5) == 0 && (b % 5) == 0 ) return 5;
-        if( (a % 7) == 0 && (b % 7) == 0 ) return 7;
-        if( (a % 11) == 0 && (b % 11) == 0 ) return 11;
-        if( (a % 13) == 0 && (b % 13) == 0 ) return 13;
-        if( (a % 17) == 0 && (b % 17) == 0 ) return 17;
-        return 1;
-    }
-
-    public void normalize() {
-        if( x.n == 0 ) {
-            x = new Fraction(x.n, 1);
-        }
-        else
-            for( int i=0; i<20; ++i) {
-                long d = common_divider(x.n, x.d);
-                if (d == 1) break;
-                x = new Fraction(x.n / d, x.d / d);
-            }
-
-        if( y.n == 0 ) {
-            y = new Fraction(y.n, 1);
-        }
-        else
-            for( int i=0; i<20; ++i) {
-                long d = common_divider(y.n, y.d);
-                if (d == 1) break;
-                y = new Fraction(y.n / d, y.d / d);
-            }
+    public Vertex normalize() {
+        x.normalize();
+        y.normalize();
+        return this;
     }
 
     private void checkShifted(){
@@ -171,13 +154,8 @@ public class Vertex {
         if (o == null || getClass() != o.getClass()) return false;
 
         Vertex vertex = (Vertex) o;
+        return x.n == vertex.x.n && x.d == vertex.x.d && y.n == vertex.y.n && y.d == vertex.y.d;
 
-        if (x.n != vertex.x.n) return false;
-        if (x.d != vertex.x.d) return false;
-        if (y.n != vertex.y.n) return false;
-        if (y.d != vertex.y.d) return false;
-
-        return true;
     }
 
     @Override
