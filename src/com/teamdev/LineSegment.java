@@ -22,23 +22,23 @@ public class LineSegment {
         String result = "";
 
         String vdx1_str = "";
-        if (v1.dX != 1) {
-            vdx1_str = "/" + v1.dX;
+        if (v1.x.d != 1) {
+            vdx1_str = "/" + v1.x.d;
         }
         String vdy1_str = "";
-        if (v1.dY != 1) {
-            vdy1_str = "/" + v1.dY;
+        if (v1.y.d != 1) {
+            vdy1_str = "/" + v1.y.d;
         }
         String vdx2_str = "";
-        if (v2.dX != 1) {
-            vdx2_str = "/" + v2.dX;
+        if (v2.x.d != 1) {
+            vdx2_str = "/" + v2.x.d;
         }
         String vdy2_str = "";
-        if (v2.dY != 1) {
-            vdy2_str = "/" + v2.dY;
+        if (v2.y.d != 1) {
+            vdy2_str = "/" + v2.y.d;
         }
-        result += v1.nX + vdx1_str + "," + v1.nY + vdy1_str + " "
-                + v2.nX + vdx2_str + "," + v2.nY + vdy2_str;
+        result += v1.x.n + vdx1_str + "," + v1.y.n + vdy1_str + " "
+                + v2.x.n + vdx2_str + "," + v2.y.n + vdy2_str;
 
         return result;
     }

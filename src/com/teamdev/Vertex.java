@@ -4,7 +4,6 @@ import sun.plugin.dom.exception.InvalidStateException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by kirill.sidorchuk on 8/5/2016.
@@ -12,27 +11,22 @@ import java.util.Vector;
 public class Vertex {
 
     boolean shifted = false;
-    // x
-    public long nX; // nominator
-    public long dX; // denominator
 
-    // y
-    public long nY; // nominator
-    public long dY; // denominator
+    public Fraction x;
+    public Fraction y;
 
     // x in Big Decimal
-    public BigDecimal nXBig; // nominator
-    public BigDecimal dXBig; // denominator
+    public BigDecimal nXBig; // n
+    public BigDecimal dXBig; // d
 
     // y in Big Decimal
-    public BigDecimal nYBig; // nominator
-    public BigDecimal dYBig; // denominator
+    public BigDecimal nYBig; // n
+    public BigDecimal dYBig; // d
 
     public Vertex() {
-        nX = 0;
-        dX = 1;
-        nY = 0;
-        dY = 1;
+        x = new Fraction(0, 1);
+        y = new Fraction(0, 1);
+
         nXBig = new BigDecimal(0);
         dXBig = new BigDecimal(1);
         nYBig = new BigDecimal(0);
@@ -48,10 +42,8 @@ public class Vertex {
 
 
     public Vertex(long nX, long dX, long nY, long dY) {
-        this.nX = nX;
-        this.dX = dX;
-        this.nY = nY;
-        this.dY = dY;
+        x = new Fraction(nX, dX);
+        y = new Fraction(nY, dY);
         shifted = true;
     }
 
@@ -84,18 +76,16 @@ public class Vertex {
     }
 
     public void makeValidFromSimpleFraction() {
-        nX = nXBig.longValue();
-        dX = dXBig.longValue();
-        nY = nYBig.longValue();
-        dY = dYBig.longValue();
+        x = new Fraction(nXBig.longValue(), dXBig.longValue());
+        y = new Fraction(nYBig.longValue(), dYBig.longValue());
         shifted = true;
     }
 
     public Vertex translate(Vertex v) {
-        long _nX = nX*v.dX + v.nX*dX;
-        long _dX = v.dX * dX;
-        long _nY = nY*v.dY + v.nY*dY;
-        long _dY = v.dY * dY;
+        long _nX = x.n * v.x.d + v.x.n * x.d;
+        long _dX = v.x.d * x.d;
+        long _nY = y.n * v.y.d + v.y.n * y.d;
+        long _dY = v.y.d * y.d;
 
         return new Vertex(_nX, _dX, _nY, _dY);
         // todo add big decimals
@@ -138,26 +128,24 @@ public class Vertex {
     }
 
     public void normalize() {
-        if( nX == 0 ) {
-            dX = 1;
+        if( x.n == 0 ) {
+            x = new Fraction(x.n, 1);
         }
         else
             for( int i=0; i<20; ++i) {
-                long d = common_divider(nX, dX);
+                long d = common_divider(x.n, x.d);
                 if (d == 1) break;
-                nX /= d;
-                dX /= d;
+                x = new Fraction(x.n / d, x.d / d);
             }
 
-        if( nY == 0 ) {
-            dY = 1;
+        if( y.n == 0 ) {
+            y = new Fraction(y.n, 1);
         }
         else
             for( int i=0; i<20; ++i) {
-                long d = common_divider(nY, dY);
+                long d = common_divider(y.n, y.d);
                 if (d == 1) break;
-                nY /= d;
-                dY /= d;
+                y = new Fraction(y.n / d, y.d / d);
             }
     }
 
@@ -169,12 +157,12 @@ public class Vertex {
 
     public float getFloatX() {
         checkShifted();
-        return (float) ((double)nX / (double) dX);
+        return x.getFloatValue();
     }
 
     public float getFloatY() {
         checkShifted();
-        return (float) ((double)nY / (double) dY);
+        return y.getFloatValue();
     }
 
     @Override
@@ -184,33 +172,33 @@ public class Vertex {
 
         Vertex vertex = (Vertex) o;
 
-        if (nX != vertex.nX) return false;
-        if (dX != vertex.dX) return false;
-        if (nY != vertex.nY) return false;
-        if (dY != vertex.dY) return false;
+        if (x.n != vertex.x.n) return false;
+        if (x.d != vertex.x.d) return false;
+        if (y.n != vertex.y.n) return false;
+        if (y.d != vertex.y.d) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (nX ^ (nX >>> 32));
-        result = 31 * result + (int) (dX ^ (dX >>> 32));
-        result = 31 * result + (int) (nY ^ (nY >>> 32));
-        result = 31 * result + (int) (dY ^ (dY >>> 32));
+        int result = (int) (x.n ^ (x.n >>> 32));
+        result = 31 * result + (int) (x.d ^ (x.d >>> 32));
+        result = 31 * result + (int) (y.n ^ (y.n >>> 32));
+        result = 31 * result + (int) (y.d ^ (y.d >>> 32));
         return result;
     }
 
     @Override
     public String toString() {
         String vdx_str = "";
-        if (dX != 1) {
-            vdx_str = "/" + dX;
+        if (x.d != 1) {
+            vdx_str = "/" + x.d;
         }
         String vdy_str = "";
-        if (dY != 1) {
-            vdy_str = "/" + dY;
+        if (y.d != 1) {
+            vdy_str = "/" + y.d;
         }
-        return nX + vdx_str + "," + nY + vdy_str;
+        return x.n + vdx_str + "," + y.n + vdy_str;
     }
 }
