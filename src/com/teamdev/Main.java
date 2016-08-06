@@ -14,7 +14,7 @@ public class Main {
         }
         String problemID = args[0];
         Problem problem = ProblemReader.read(new File(PROBLEMS_PATH, problemID + ".txt"));
-        ProblemVisualizer.visualizeProblem(problem, problemID + ".png");
+        ProblemVisualizer.visualizeProblem(problem, PROBLEMS_PATH + File.separator + problemID + ".png");
 
         problem.getOrigami();
 
