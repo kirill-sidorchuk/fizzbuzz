@@ -89,10 +89,18 @@ public class Problem {
 
         OPolygon polygon = polygons.get(0);
 
+        Fraction area = polygon.calcArea();
+        System.out.println("polygon area = " + area + " = " + area.getFloatValue());
+
         Origami origami = new Origami();
 
+        // adding external vertices (from silhouette)
         origami.vertices.addAll(polygon.vertices);
         origami.nContourVertices = polygon.vertices.size();
+
+        for (Vertex v : origami.vertices) {
+            v.external = true;
+        }
 
         // adding external edges
         for( int i=0; i<polygon.vertices.size(); ++i) {
@@ -107,14 +115,20 @@ public class Problem {
 
         // adding hidden vertices and internal edges
         for (LineSegment seg : lineSegments) {
+            seg.v1.external = false;
+            seg.v2.external = false;
+
             int i1 = origami.vertices.indexOf(seg.v1);
             if( i1 == -1 ) {
+                i1 = origami.vertices.size();
                 origami.vertices.add(seg.v1);
             }
             int i2 = origami.vertices.indexOf(seg.v2);
             if( i2 != -1 ) {
+                i2 = origami.vertices.size();
                 origami.vertices.add(seg.v2);
             }
+
 
 
         }

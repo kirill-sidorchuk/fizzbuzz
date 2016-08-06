@@ -84,4 +84,12 @@ public class Fraction implements Comparable<Fraction> {
         return diff.n < 0 ? -1 : +1;
     }
 
+    @Override
+    public String toString() {
+        return "Fraction{" + n + "/" + d + "}";
+    }
+
+    public Fraction inv() {
+        return new Fraction(-n,d);
+    }
 }

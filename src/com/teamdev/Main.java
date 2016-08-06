@@ -19,8 +19,11 @@ public class Main {
         String problemID = args[0];
         Problem problem = ProblemReader.read(new File(TEST_FILE_PATH, problemID + ".txt"));
         ProblemVisualizer.visualizeProblem(problem, problemID + ".png");
-        PolygonHelper polygonHelper = new PolygonHelper();
-        polygonHelper.createBufferedImageFromVertices(problem.polygons);
+
+        problem.getOrigami();
+
+//        PolygonHelper polygonHelper = new PolygonHelper();
+//        polygonHelper.createBufferedImageFromVertices(problem.polygons);
 
         //    System.out.println(problem.toString());
 

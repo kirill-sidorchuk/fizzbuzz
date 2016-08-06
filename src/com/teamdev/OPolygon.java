@@ -71,6 +71,6 @@ public class OPolygon {
             area = area.add((vj.x.add(vi.x)).mul(vj.y.sub(vi.y)));
             j = i;  //j is previous vertex to i
         }
-        return area.div(2);
+        return area.div(2).inv().normalize();
     }
 }

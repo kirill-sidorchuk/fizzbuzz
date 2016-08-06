@@ -18,6 +18,8 @@ public class Vertex {
     public Fraction x;
     public Fraction y;
 
+    public boolean external = true;
+
     // x in Big Decimal
     public BigDecimal nXBig; // n
     public BigDecimal dXBig; // d
