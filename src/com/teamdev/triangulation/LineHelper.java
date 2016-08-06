@@ -26,7 +26,8 @@ public class LineHelper {
             Vertex vertex2 = polygon.vertices.get(i + 1);
             point = Intersection(vertex1.x, vertex2.x, vertex1.y, vertex2.y, fractionX1, fractionY1, fractionX2, fractionY2);
             if (point != null) {
-                intersectionPoints.add(point);
+                if (!intersectionPoints.contains(point))
+                    intersectionPoints.add(point);
             }
 
         }
@@ -35,8 +36,9 @@ public class LineHelper {
         Vertex vertex2 = polygon.vertices.get(0);
         point = Intersection(vertex1.x, vertex2.x, vertex1.y, vertex2.y, fractionX1, fractionY1, fractionX2, fractionY2);
         if (point != null)
-            intersectionPoints.add(point);
-        if (intersectionPoints.size() == 0) {
+            if (!intersectionPoints.contains(point))
+                intersectionPoints.add(point);
+        if (intersectionPoints.size() == 2) {
             if (intersectionPoints.get(0).equals(intersectionPoints.get(1)))
                 return new ArrayList<>();
         }
@@ -55,7 +57,20 @@ public class LineHelper {
 
         Fraction x = xo.mul(q).mul(p1).sub(x1.mul(q1).mul(p)).sub(yo.mul(p).mul(p1)).add(y1.mul(p).mul(p1)).div(q.mul(p1).sub(q1.mul(p)));
         Fraction y = yo.mul(p).mul(q1).sub(y1.mul(p1).mul(q)).sub(xo.mul(q).mul(q1)).add(x1.mul(q).mul(q1)).div(p.mul(q1).sub(p1.mul(q)));
-        if (x.d == 0 || x.d == 0) return null;
+
+        Fraction maxX = new Fraction(0, 0);
+        Fraction maxY = new Fraction(0, 0);
+        Fraction minX = new Fraction(0, 0);
+        Fraction minY = new Fraction(0, 0);
+        if (x.d == 0 || y.d == 0) return null;
+        maxX = xo.getDoubleValue() > xb.getDoubleValue() ? xo : xb;
+        minX = xo.getDoubleValue() < xb.getDoubleValue() ? xo : xb;
+        maxY = yo.getDoubleValue() > yb.getDoubleValue() ? yo : yb;
+        minY = yo.getDoubleValue() < yb.getDoubleValue() ? yo : yb;
+        if (x.getDoubleValue() > maxX.getDoubleValue() || x.getDoubleValue() < minX.getDoubleValue() ||
+                y.getDoubleValue() > maxY.getDoubleValue() || y.getDoubleValue() < minY.getDoubleValue()) return null;
+
+
         return new Vertex(x, y);
     }
 
