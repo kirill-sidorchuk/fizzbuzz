@@ -129,10 +129,16 @@ public class Problem {
                 origami.vertices.add(seg.v2);
             }
 
-
-
+            Edge e = new Edge(i1, i2, false);
+            if( !origami.edges.contains(e) ) {
+                origami.edges.add(e);
+                origami.vertices.get(i1).addEdge(e);
+                origami.vertices.get(i2).addEdge(e);
+            }
         }
 
+        // searching for facets
+        
 
         return origami;
     }
