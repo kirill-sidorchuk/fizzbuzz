@@ -83,4 +83,32 @@ public class Problem {
                 ", lineSegments=" + lineSegments +
                 '}';
     }
+
+    public Origami getOrigami() {
+        if( polygons.size() > 1 ) throw new RuntimeException("multi-polygonal problems not supported");
+
+        OPolygon polygon = polygons.get(0);
+
+        Origami origami = new Origami();
+
+        origami.vertices.addAll(polygon.vertices);
+        origami.nContourVertices = polygon.vertices.size();
+
+        // adding hidden vertices
+        for (LineSegment seg : lineSegments) {
+            int i1 = origami.vertices.indexOf(seg.v1);
+            if( i1 == -1 ) {
+                origami.vertices.add(seg.v1);
+            }
+            int i2 = origami.vertices.indexOf(seg.v2);
+            if( i2 != -1 ) {
+                origami.vertices.add(seg.v2);
+            }
+
+        }
+
+
+        return origami;
+    }
+
 }
