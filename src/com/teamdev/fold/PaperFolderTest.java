@@ -1,5 +1,6 @@
 package com.teamdev.fold;
 
+import com.teamdev.Fraction;
 import com.teamdev.Vertex;
 
 import java.io.File;
@@ -31,13 +32,15 @@ public class PaperFolderTest {
         final Paper paper = createInitialPaper();
         paperVisualizer.draw(paper, new File(FOLDER + "1.png"));
 
-        final FoldLine foldLine = new FoldLine(new Vertex(15, 32, 24, 32), new Vertex(30, 32, 10, 32));;
+        //final FoldLine foldLine = new FoldLine(new Vertex(15, 32, 24, 32), new Vertex(30, 32, 10, 32));
+        final FoldLine foldLine = new FoldLine(new Fraction(-9,10), new Fraction(1,5));
         paperVisualizer.draw(paper, foldLine, new File(FOLDER + "2.png"));
 
         final Paper folded = paperFolder.fold(paper, foldLine);
         paperVisualizer.draw(folded, new File(FOLDER + "3.png"));
 
-        final FoldLine foldLine2 = new FoldLine(new Vertex(3, 32, 21, 32), new Vertex(30, 32, 1, 32));
+        //final FoldLine foldLine2 = new FoldLine(new Vertex(1, 1, 1, 3), new Vertex(0, 1, 2, 3));
+        final FoldLine foldLine2 = new FoldLine(new Fraction(-4,5), new Fraction(3,10));
         paperVisualizer.draw(folded, foldLine2, new File(FOLDER + "4.png"));
 
         final Paper folded2 = paperFolder.fold(folded, foldLine2);
