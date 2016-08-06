@@ -1,6 +1,6 @@
 package com.teamdev.fold;
 
-import com.teamdev.Vertex;
+import com.teamdev.OPolygon;
 
 import java.util.List;
 
@@ -8,22 +8,22 @@ import java.util.List;
  * @author Vladislav Kovchug
  */
 public class Paper {
-    private List<List<Vertex>> vertices;
+    private List<OPolygon> polygons;
 
-    public Paper(List<List<Vertex>> vertices) {
-        this.vertices = vertices;
+    public Paper(List<OPolygon> vertices) {
+        this.polygons = vertices;
     }
 
-    public List<List<Vertex>> getVertices() {
-        return vertices;
+    public List<OPolygon> getPolygons() {
+        return polygons;
     }
 
-    public void setVertices(List<List<Vertex>> vertices) {
-        this.vertices = vertices;
+    public void setPolygons(List<OPolygon> polygons) {
+        this.polygons = polygons;
     }
 
-    public void add(List<Vertex> polygon){
-        this.vertices.add(polygon);
+    public void add(OPolygon polygon){
+        this.polygons.add(polygon);
     }
 
 }

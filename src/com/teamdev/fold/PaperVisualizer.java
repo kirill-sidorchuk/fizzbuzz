@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static com.teamdev.fold.PaperFolderHelper.getYForLine;
+
 /**
  * @author Vladislav Kovchug
  */
@@ -24,7 +26,7 @@ public class PaperVisualizer {
         gr.setPaint(Color.white);
         gr.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-        final List<Vertex> vertices = paper.getVertices().get(0);
+        final List<Vertex> vertices = paper.getPolygons().get(0).vertices;
         int pointsCount = vertices.size();
         int[] xPoints = new int[pointsCount];
         int[] yPoints = new int[pointsCount];
@@ -41,8 +43,11 @@ public class PaperVisualizer {
             gr.setColor(Color.red);
             gr.setStroke(new BasicStroke(3));
 
-            gr.drawLine(transformXCoordinate(foldLine.getV1().getFloatX()), transformYCoordinate(foldLine.getV1().getFloatY()),
-                    transformXCoordinate(foldLine.getV2().getFloatX()), transformYCoordinate(foldLine.getV2().getFloatY()));
+            final float x1 = 0;
+            final float x2 = 2;
+
+            gr.drawLine(transformXCoordinate(x1), transformYCoordinate(getYForLine(foldLine, x1)),
+                    transformXCoordinate(x2), transformYCoordinate(getYForLine(foldLine, x2)));
         }
 
     }
@@ -71,5 +76,6 @@ public class PaperVisualizer {
     private int transformYCoordinate(double value) {
         return IMAGE_HEIGHT - ((int) (value * SCALE) + PADDING);
     }
+
 
 }

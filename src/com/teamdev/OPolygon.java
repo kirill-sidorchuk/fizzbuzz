@@ -14,6 +14,13 @@ public class OPolygon {
 
     public List<Vertex> vertices = new ArrayList<>();
 
+    public OPolygon() {
+    }
+
+    public OPolygon(List<Vertex> vertices) {
+        this.vertices = vertices;
+    }
+
     public FRange getXRange() {
         if( xRange == null ) calcRanges();
         return xRange;
