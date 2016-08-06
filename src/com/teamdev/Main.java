@@ -16,7 +16,8 @@ public class Main {
         Problem problem = ProblemReader.read(new File(PROBLEMS_PATH, problemID + ".txt"));
         ProblemVisualizer.visualizeProblem(problem, PROBLEMS_PATH + File.separator + problemID + ".png");
 
-        problem.getOrigami();
+        Origami origami = problem.getOrigami();
+        origami.findFacets();
 
 //        PolygonHelper polygonHelper = new PolygonHelper();
 //        polygonHelper.createBufferedImageFromVertices(problem.polygons);

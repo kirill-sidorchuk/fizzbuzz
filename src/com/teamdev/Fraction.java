@@ -69,8 +69,8 @@ public class Fraction implements Comparable<Fraction> {
         return new Fraction(_n, _d).normalize();
     }
 
-    public Fraction mul(Fraction x) {
-        return new Fraction(n*x.n, d*x.d).normalize();
+    public Fraction mul(Fraction f) {
+        return new Fraction(n*f.n, d*f.d).normalize();
     }
 
     public Fraction div(Fraction x){
@@ -95,5 +95,9 @@ public class Fraction implements Comparable<Fraction> {
 
     public Fraction inv() {
         return new Fraction(-n,d);
+    }
+
+    public double getDoubleValue() {
+        return (double)n / (double)d;
     }
 }
