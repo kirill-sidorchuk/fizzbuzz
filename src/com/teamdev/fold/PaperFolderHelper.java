@@ -25,7 +25,7 @@ public class PaperFolderHelper {
         return new Paper(oPolygons);
     }
 
-    public static double getYForLine(FoldLine line, float x){
+    public static double getYForLine(FoldLine line, double x){
         return line.getK()*x + line.getC();
     }
 
