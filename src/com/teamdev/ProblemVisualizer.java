@@ -176,15 +176,22 @@ public class ProblemVisualizer extends Frame {
             }
         });
         for (File file: txtList) {
-            try {
-                Origami origami = ProblemReader.read(file).getOrigami();
-                visualizeOrigami(origami, file.getAbsolutePath().replace(".txt", ".png"));
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-            }
+            visualizeOrigamiFile(file);
         }
-
-
     }
 
+    private static void visualizeOrigamiFile(File file) throws IOException {
+        try {
+            Origami origami = ProblemReader.read(file).getOrigami();
+            visualizeOrigami(origami, file.getAbsolutePath().replace(".txt", ".png"));
+        } catch (RuntimeException e) {
+            System.out.println("Failed to visualize: " + file.getName());
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+//        visualizeOrigamiFile(new File("problems/initial/10.txt"));
+        visualizeFolder(args[0]);
+    }
 }

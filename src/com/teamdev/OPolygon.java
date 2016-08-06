@@ -75,7 +75,7 @@ public class OPolygon {
         {
             final Vertex vi = vertices.get(i);
             final Vertex vj = vertices.get(j);
-            area = area.add((vj.x.add(vi.x)).mul(vj.y.sub(vi.y)));
+            area = area.add((vj.x.add(vi.x)).mul(vj.y.sub(vi.y))).normalize();
             j = i;  //j is previous vertex to i
         }
         return area.div(2).inv().normalize();
