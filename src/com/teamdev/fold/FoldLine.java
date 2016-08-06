@@ -18,9 +18,8 @@ public class FoldLine {
         final Vertex bottomPoint = v1.getFloatY() <= v2.getFloatY() ? v1 : v2;
         final Vertex topPoint = v1.getFloatY() > v2.getFloatY() ? v1 : v2;
 
-        this.k = (bottomPoint.getFloatY() - topPoint.getFloatY())/(topPoint.getFloatX() - bottomPoint.getFloatX());
-        this.c = (bottomPoint.getFloatX()*topPoint.getFloatY() - topPoint.getFloatX()*bottomPoint.getFloatY());
-        System.out.println(this.k + " " + this.c);
+        this.k = (bottomPoint.getFloatY() - topPoint.getFloatY())/(topPoint.getFloatX() - bottomPoint.getFloatX())*-1;
+        this.c = (bottomPoint.getFloatX()*topPoint.getFloatY() - topPoint.getFloatX()*bottomPoint.getFloatY())*-1;
     }
 
     public double getK() {

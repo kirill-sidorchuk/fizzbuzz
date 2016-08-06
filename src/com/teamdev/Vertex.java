@@ -104,14 +104,11 @@ public class Vertex {
     }
 
     public Vertex rotate(double[] R) {
-        float fx = getFloatX();
-        float fy = getFloatY();
-
-        double rx = R[0] * fx + R[1] * fy;
-        double ry = R[2] * fx + R[3] * fy;
-
-        final long ACC = 80000000;
-        return new Vertex( Math.round(rx*ACC), ACC, Math.round(ry*ACC), ACC).normalize();
+        final double ACC = 1024;
+        long rx = Math.round(ACC * (R[0] * x.n * y.d + R[1] * y.n * x.d));
+        long ry = Math.round(ACC * (R[2] * x.n * y.d + R[3] * y.n * x.d));
+        long den = Math.round(x.d * y.d * ACC);
+        return new Vertex( rx, den, ry, den).normalize();
     }
 
     public static Vertex average(List<Vertex> list) {

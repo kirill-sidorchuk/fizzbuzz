@@ -1,7 +1,9 @@
 package com.teamdev;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kirill.sidorchuk on 8/5/2016.
@@ -138,7 +140,21 @@ public class Problem {
         }
 
         // searching for facets
-        
+        for( int i=0; i<origami.vertices.size(); ++i) {
+            Vertex startVert = origami.vertices.get(i);
+            int j = startVert.edges.get(0).i0;
+            if( j == i) j = startVert.edges.get(0).i1;
+            Set<Integer> indexes = new HashSet<>();
+            indexes.add(i);
+            indexes.add(j);
+
+            while(!indexes.contains(j)) {
+                // selecting where to go
+
+//                startVert.addEdkge();
+
+            }
+        }
 
         return origami;
     }
