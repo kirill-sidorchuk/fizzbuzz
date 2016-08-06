@@ -43,6 +43,10 @@ public class Edge {
         return i0 == e.i0 || i0 == e.i1 || i1 == e.i0 || i1 == e.i1;
     }
 
+    public boolean containsIndex(int i) {
+        return i0 == i || i1 == i;
+    }
+
     public boolean containsPoint(Vertex X, List<Vertex> vertices) {
         Vertex A = vertices.get(i0);
         Vertex B = vertices.get(i1);
@@ -104,4 +108,5 @@ public class Edge {
         Vertex intersection = e1.getIntersection(e2, vertices);
         intersection.toString();
     }
+
 }

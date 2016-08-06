@@ -140,14 +140,35 @@ public class Problem {
         }
 
         // checking for intersections
-        int count = 0;
-        for( int i=0; i<origami.edges.size()-1; ++i) {
-            Edge ei = origami.edges.get(i);
-            for( int j=i+1; j<origami.edges.size(); ++j ) {
-                Edge ej = origami.edges.get(j);
-                Vertex intersection = ei.getIntersection(ej, origami.vertices);
-                if( intersection != null ) {
-                    count ++;
+        int totalCount = 0;
+        int count = 1;
+        while(count != 0) {
+            count = 0;
+            for (int i = 0; i < origami.edges.size() - 1 && count == 0; ++i) {
+                Edge ei = origami.edges.get(i);
+                for (int j = i + 1; j < origami.edges.size() && count == 0; ++j) {
+                    Edge ej = origami.edges.get(j);
+                    if (ei.hasCommonVertex(ej)) continue;
+                    Vertex intersection = ei.getIntersection(ej, origami.vertices);
+                    if (intersection != null) {
+                        int intIndex = origami.vertices.indexOf(intersection);
+                        if (intIndex == -1) {
+                            // adding to list
+                            intIndex = origami.vertices.size() - 1;
+                            origami.vertices.add(intersection);
+
+                            splitEdge(origami, ei, intersection, intIndex);
+                            splitEdge(origami, ej, intersection, intIndex);
+                        } else {
+                            if (ei.containsIndex(intIndex)) {
+                                splitEdge(origami, ej, intersection, intIndex);
+                            } else {
+                                splitEdge(origami, ei, intersection, intIndex);
+                            }
+                        }
+                        count++;
+                        totalCount++;
+                    }
                 }
             }
         }
@@ -155,6 +176,22 @@ public class Problem {
         System.out.println("Count of intersections = " + count);
 
         return origami;
+    }
+
+    private static void splitEdge(Origami origami, Edge ej, Vertex intersection, int intIndex) {
+        Vertex Bj0 = origami.vertices.get(ej.i0);
+        Vertex Bj1 = origami.vertices.get(ej.i1);
+        Bj0.edges.remove(ej);
+        Bj1.edges.remove(ej);
+        Edge ej0 = new Edge(ej.i0, intIndex, false);
+        Edge ej1 = new Edge(intIndex, ej.i1, false);
+        intersection.addEdge(ej0);
+        intersection.addEdge(ej1);
+        Bj0.edges.add(ej0);
+        Bj1.edges.add(ej1);
+        origami.edges.remove(ej);
+        origami.edges.add(ej0);
+        origami.edges.add(ej1);
     }
 
 }
