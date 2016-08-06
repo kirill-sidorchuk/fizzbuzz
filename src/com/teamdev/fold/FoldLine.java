@@ -6,19 +6,28 @@ import com.teamdev.Vertex;
  * @author Vladislav Kovchug
  */
 public class FoldLine {
-    private Vertex v1;
-    private Vertex v2;
+    private double k;
+    private double c;
+
+    public FoldLine(double k, double c) {
+        this.k = k;
+        this.c = c;
+    }
 
     public FoldLine(Vertex v1, Vertex v2) {
-        this.v1 = v1;
-        this.v2 = v2;
+        final Vertex bottomPoint = v1.getFloatY() <= v2.getFloatY() ? v1 : v2;
+        final Vertex topPoint = v1.getFloatY() > v2.getFloatY() ? v1 : v2;
+
+        this.k = (bottomPoint.getFloatY() - topPoint.getFloatY())/(topPoint.getFloatX() - bottomPoint.getFloatX());
+        this.c = (bottomPoint.getFloatX()*topPoint.getFloatY() - topPoint.getFloatX()*bottomPoint.getFloatY());
+        System.out.println(this.k + " " + this.c);
     }
 
-    public Vertex getV1() {
-        return v1;
+    public double getK() {
+        return k;
     }
 
-    public Vertex getV2() {
-        return v2;
+    public double getC() {
+        return c;
     }
 }

@@ -1,9 +1,9 @@
 package com.teamdev.fold;
 
+import com.teamdev.OPolygon;
 import com.teamdev.Vertex;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Vladislav Kovchug
@@ -20,9 +20,13 @@ public class PaperFolderHelper {
         vertices.add(new Vertex(1, 1, 0, 1));
         vertices.add(new Vertex(1, 1, 1, 1));
         vertices.add(new Vertex(0, 1, 1, 1));
-        final ArrayList<List<Vertex>> objects = new ArrayList<>();
-        objects.add(vertices);
-        return new Paper(objects);
+        final ArrayList<OPolygon> oPolygons = new ArrayList<>();
+        oPolygons.add(new OPolygon(vertices));
+        return new Paper(oPolygons);
+    }
+
+    public static double getYForLine(FoldLine line, float x){
+        return line.getK()*x + line.getC();
     }
 
 }
