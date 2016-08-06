@@ -57,16 +57,24 @@ public class Fraction implements Comparable<Fraction> {
         return this;
     }
 
-    public Fraction add(Fraction x) {
-        long _n = n * x.d + x.n * d;
-        long _d = d * x.d;
+    public Fraction add(Fraction f) {
+        long _n = n * f.d + f.n * d;
+        long _d = d * f.d;
         return new Fraction(_n, _d).normalize();
     }
 
-    public Fraction sub(Fraction x) {
-        long _n = n * x.d - x.n * d;
-        long _d = d * x.d;
+    public Fraction sub(Fraction f) {
+        long _n = n * f.d - f.n * d;
+        long _d = d * f.d;
         return new Fraction(_n, _d).normalize();
+    }
+
+    public Fraction mul(Fraction x) {
+        return new Fraction(n*x.n, d*x.d).normalize();
+    }
+
+    public Fraction div(long v) {
+        return new Fraction(n, d*v);
     }
 
     @Override
@@ -75,4 +83,5 @@ public class Fraction implements Comparable<Fraction> {
         if( diff.n == 0 ) return 0;
         return diff.n < 0 ? -1 : +1;
     }
+
 }
