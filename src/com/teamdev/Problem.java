@@ -139,6 +139,7 @@ public class Problem {
             }
         }
 
+
         // checking for intersections
         int totalCount = 0;
         int count = 1;
@@ -154,12 +155,13 @@ public class Problem {
                         int intIndex = origami.vertices.indexOf(intersection);
                         if (intIndex == -1) {
                             // adding to list
-                            intIndex = origami.vertices.size() - 1;
+                            intIndex = origami.vertices.size();
                             origami.vertices.add(intersection);
 
                             splitEdge(origami, ei, intersection, intIndex);
                             splitEdge(origami, ej, intersection, intIndex);
                         } else {
+                            intersection = origami.vertices.get(intIndex);
                             if (ei.containsIndex(intIndex)) {
                                 splitEdge(origami, ej, intersection, intIndex);
                             } else {
@@ -173,7 +175,7 @@ public class Problem {
             }
         }
 
-        System.out.println("Count of intersections = " + count);
+        System.out.println("Count of intersections = " + totalCount);
 
         return origami;
     }

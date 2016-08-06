@@ -91,7 +91,8 @@ public class Edge {
         if( x == null ) return null;
         Vertex x2 = e.getIntersectionWithPlane(this, vertices);
         if( x2 == null ) return null;
-        if( !x.equals(x2) ) throw new RuntimeException("intersection is not consistent");
+        if( !x.equals(x2) )
+            throw new RuntimeException("intersection is not consistent");
         return x;
     }
 

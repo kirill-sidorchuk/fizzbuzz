@@ -41,6 +41,8 @@ public class Fraction implements Comparable<Fraction> {
         if( (a % 11) == 0 && (b % 11) == 0 ) return 11;
         if( (a % 13) == 0 && (b % 13) == 0 ) return 13;
         if( (a % 17) == 0 && (b % 17) == 0 ) return 17;
+        if( (a % 19) == 0 && (b % 19) == 0 ) return 19;
+        if( (a % 23) == 0 && (b % 23) == 0 ) return 23;
         return 1;
     }
 
