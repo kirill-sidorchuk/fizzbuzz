@@ -139,6 +139,9 @@ public class Problem {
             }
         }
 
+        // checking for intersections
+
+
         return origami;
     }
 

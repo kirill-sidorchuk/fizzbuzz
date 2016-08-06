@@ -5,6 +5,7 @@ import sun.plugin.dom.exception.InvalidStateException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by kirill.sidorchuk on 8/5/2016.
@@ -126,8 +127,12 @@ public class Vertex {
         return x.mul(x).add(y.mul(y));
     }
 
+    public Fraction vect_prod_z(Vertex v) {
+        return x.mul(v.y).sub(y.mul(v.x));
+    }
+
     public float getSinus(Vertex v) {
-        double vect_prod = x.mul(v.y).sub(y.mul(v.x)).getDoubleValue();
+        double vect_prod = vect_prod_z(v).getDoubleValue();
         double norm = Math.sqrt(normSquared().mul(v.normSquared()).getDoubleValue());
         return (float) (vect_prod / norm);
     }
