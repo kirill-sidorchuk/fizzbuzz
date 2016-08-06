@@ -56,13 +56,6 @@ public class PaperFolder {
         return result;
     }
 
-    private List<Vertex> getIntersectionPoints(OPolygon p, FoldLine line){
-        final ArrayList<Vertex> vertexes = new ArrayList<>();
-        vertexes.add(new Vertex());
-        vertexes.add(new Vertex());
-        return vertexes;
-    }
-
     public static double cmpWithLine(FoldLine line, Vertex p){
         final double translatedK = line.getK() >= 0 ? 1 : -1; // 1 or -1
         final double yOnLine = getYForLine(line, p.getFloatX());
@@ -72,13 +65,19 @@ public class PaperFolder {
     private List<Vertex> revertPolygon(List<Vertex> polygon, FoldLine line){
         final ArrayList<Vertex> result = new ArrayList<Vertex>(polygon.size());
         for (Vertex vertex : polygon) {
+            final Fraction x = vertex.x;
+            final Fraction y = vertex.y;
+            final Fraction c = line.getFractionC();
+            final Fraction k = line.getFractionK();
+
             //d = (x + (y - c)*k ) / (1 + k*k )
             //x' = 2*d - x
             //y' = 2*d*k - y + 2*c
 
-            final Fraction d = vertex.y.sub(line.getFractionC()).mul(line.getFractionK()).add(vertex.x).div(new Fraction(1, 1).add(line.getFractionK().mul(line.getFractionK())));
-
-
+            final Fraction d = y.sub(c).mul(k).add(x).div(new Fraction(1, 1).add(k.mul(k)));
+            final Fraction newX = new Fraction(2, 1).mul(d).sub(x);
+            final Fraction newY = new Fraction(2, 1).mul(d).mul(k).sub(y).add(new Fraction(2, 1).mul(c));
+            result.add(new Vertex(newX, newY));
         }
 
         return result;
