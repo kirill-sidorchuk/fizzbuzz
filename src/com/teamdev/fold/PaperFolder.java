@@ -57,7 +57,7 @@ public class PaperFolder {
     }
 
     public static double cmpWithLine(FoldLine line, Vertex p){
-        final double translatedK = line.getK() / Math.abs(line.getK()); // 1 or -1
+        final double translatedK = line.getK() >= 0 ? 1 : -1; // 1 or -1
         final double yOnLine = getYForLine(line, p.getFloatX());
         return Double.compare(yOnLine, p.getFloatY()) * translatedK;
     }

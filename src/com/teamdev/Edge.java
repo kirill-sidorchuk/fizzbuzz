@@ -43,6 +43,10 @@ public class Edge {
         return i0 == e.i0 || i0 == e.i1 || i1 == e.i0 || i1 == e.i1;
     }
 
+    public boolean containsIndex(int i) {
+        return i0 == i || i1 == i;
+    }
+
     public boolean containsPoint(Vertex X, List<Vertex> vertices) {
         Vertex A = vertices.get(i0);
         Vertex B = vertices.get(i1);
@@ -58,7 +62,7 @@ public class Edge {
         return XA.normSquared().compareTo(BA.normSquared()) <= 0;
     }
 
-    public Vertex getIntersection(Edge e, List<Vertex> vertices) {
+    public Vertex getIntersectionWithPlane(Edge e, List<Vertex> vertices) {
         Vertex A = vertices.get(i0);
         Vertex B = vertices.get(i1);
         Vertex C = vertices.get(e.i0);
@@ -73,7 +77,8 @@ public class Edge {
             return null;
         }
 
-        Fraction alpha = A.vect_prod_z(DC).div(den).inv();
+        Vertex CA = C.sub(A);
+        Fraction alpha = CA.vect_prod_z(DC).div(den);
         if( alpha.n < 0 ) return null;
 
         if( alpha.n >= alpha.d ) return null;
@@ -81,17 +86,31 @@ public class Edge {
         return A.add(BA.mul(alpha));
     }
 
+    public Vertex getIntersection(Edge e, List<Vertex> vertices) {
+        Vertex x = getIntersectionWithPlane(e, vertices);
+        if( x == null ) return null;
+        Vertex x2 = e.getIntersectionWithPlane(this, vertices);
+        if( x2 == null ) return null;
+        if( !x.equals(x2) )
+            throw new RuntimeException("intersection is not consistent");
+        return x;
+    }
+
     public static void main(String[] args) {
         List<Vertex> vertices = new ArrayList<>();
-        vertices.add(new Vertex(0,1, -1,1));
-        vertices.add(new Vertex(1,1, 0,1));
-        vertices.add(new Vertex(0,1, 1,1));
-        vertices.add(new Vertex(-1,1, 0,1));
+        vertices.add(new Vertex(0,1, 0,1));
+        vertices.add(new Vertex(0,1, 3,1));
+        vertices.add(new Vertex(1,1, 2,1));
+        vertices.add(new Vertex(3,1, 2,1));
 
-        Edge e1 = new Edge(0,2, false);
-        Edge e2 = new Edge(1,3, false);
+        Edge e1 = new Edge(0,1, false);
+        Edge e2 = new Edge(2,3, false);
 
         Vertex intersection = e1.getIntersection(e2, vertices);
         intersection.toString();
+    }
+
+    public int otherIndex(int i) {
+        return i0 == i ? i1 : i0;
     }
 }
