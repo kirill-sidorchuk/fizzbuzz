@@ -30,7 +30,7 @@ public class LineHelper {
             }
 
         }
-        Vertex vertex1 = polygon.vertices.get(polygon.vertices.size());
+        Vertex vertex1 = polygon.vertices.get(polygon.vertices.size()-1);
         Vertex vertex2 = polygon.vertices.get(0);
         point = getLineInteractionsWrapper(vertex1.x, vertex2.x, vertex1.y, vertex2.y, fractionX1, fractionY1, fractionX2, fractionY2);
         intersectionPoints.add(point);
