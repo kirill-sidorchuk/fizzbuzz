@@ -4,7 +4,6 @@ import com.teamdev.Vertex;
 
 import java.io.File;
 
-import static com.teamdev.fold.PaperFolder.cmpWithLine;
 import static com.teamdev.fold.PaperFolderHelper.createInitialPaper;
 
 /**
@@ -15,7 +14,7 @@ public class PaperFolderTest {
     public static final String FOLDER = "fold/";
 
     public static void main(String[] args) {
-        System.out.println(cmpWithLine(new FoldLine(new Vertex(1, 1, -1, 1), new Vertex(0, 1, 0, 1)), new Vertex(-1, 1, 0, 1)));
+        //System.out.println(cmpWithLine(new FoldLine(new Vertex(1, 1, -1, 1), new Vertex(0, 1, 0, 1)), new Vertex(-1, 1, 0, 1)));
         //System.out.println(cmpWithLine(new FoldLine(1, 0), new Vertex(1, 2, 1, 2)));
 
         final PaperFolder paperFolder = new PaperFolder();
