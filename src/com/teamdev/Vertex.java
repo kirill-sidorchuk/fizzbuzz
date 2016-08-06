@@ -83,11 +83,14 @@ public class Vertex {
             nYBig = new BigDecimal(yLine.substring(0, i).trim());
             dYBig = new BigDecimal(yLine.substring(i+1).trim());
         }
+        
+        x = new Fraction(nXBig.longValue(), dXBig.longValue()).normalize();
+        y = new Fraction(nYBig.longValue(), dYBig.longValue()).normalize();
     }
 
     public void makeValidFromSimpleFraction() {
-        x = new Fraction(nXBig.longValue(), dXBig.longValue());
-        y = new Fraction(nYBig.longValue(), dYBig.longValue());
+        x = new Fraction(nXBig.longValue(), dXBig.longValue()).normalize();
+        y = new Fraction(nYBig.longValue(), dYBig.longValue()).normalize();
         shifted = true;
     }
 
@@ -109,6 +112,24 @@ public class Vertex {
         long ry = Math.round(ACC * (R[2] * x.n * y.d + R[3] * y.n * x.d));
         long den = Math.round(x.d * y.d * ACC);
         return new Vertex( rx, den, ry, den).normalize();
+    }
+
+    public Vertex sub(Vertex vertex) {
+        return new Vertex(x.sub(vertex.x), y.sub(vertex.y));
+    }
+
+    public Vertex mul(Vertex v) {
+        return new Vertex(x.mul(v.x), y.mul(v.y));
+    }
+
+    public Fraction normSquared() {
+        return x.mul(x).add(y.mul(y));
+    }
+
+    public float getSinus(Vertex v) {
+        double vect_prod = x.mul(v.y).sub(y.mul(v.x)).getDoubleValue();
+        double norm = Math.sqrt(normSquared().mul(v.normSquared()).getDoubleValue());
+        return (float) (vect_prod / norm);
     }
 
     public static Vertex average(List<Vertex> list) {
@@ -153,8 +174,7 @@ public class Vertex {
         if (o == null || getClass() != o.getClass()) return false;
 
         Vertex vertex = (Vertex) o;
-        return x.n == vertex.x.n && x.d == vertex.x.d && y.n == vertex.y.n && y.d == vertex.y.d;
-
+        return x.equals(vertex.x) && y.equals(vertex.y);
     }
 
     @Override
@@ -178,4 +198,5 @@ public class Vertex {
         }
         return x.n + vdx_str + "," + y.n + vdy_str;
     }
+
 }

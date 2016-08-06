@@ -21,7 +21,7 @@ public class Edge {
 
         Edge edge = (Edge) o;
 
-        return i0 == edge.i0 && i1 == edge.i1;
+        return (i0 == edge.i0 && i1 == edge.i1) || (i0 == edge.i1 && i1 == edge.i0);
     }
 
     @Override
