@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 public class ProblemVisualizer extends Frame {
@@ -63,6 +64,18 @@ public class ProblemVisualizer extends Frame {
         }
     }
 
+    private static void plotLines(Graphics2D gr, Origami origami) {
+        gr.setColor(Color.red);
+        gr.setStroke(new BasicStroke(3));
+
+        for (Edge edge : origami.edges) {
+            Vertex v1 = origami.vertices.get(edge.i0);
+            Vertex v2 = origami.vertices.get(edge.i1);
+            gr.drawLine(xToPlot(v1.getFloatX()), yToPlot(v1.getFloatY()),
+                    xToPlot(v2.getFloatX()), yToPlot(v2.getFloatY()));
+        }
+    }
+
     private static void plotGrid(Graphics2D gr) {
         gr.setColor(Color.black);
 
@@ -99,6 +112,17 @@ public class ProblemVisualizer extends Frame {
         gr.setFont(new Font("TimesRoman", Font.PLAIN, 13));
     }
 
+    private static void plotVertices(Graphics2D gr, Origami origami) {
+        gr.setFont(new Font("TimesRoman", Font.BOLD, 20));
+
+        for (int i = 0; i < origami.vertices.size(); i++) {
+                Vertex vertex = origami.vertices.get(i);
+                gr.drawString(Integer.toString(i), xToPlot(vertex.getFloatX()), yToPlot(vertex.getFloatY()));
+        }
+
+        gr.setFont(new Font("TimesRoman", Font.PLAIN, 13));
+    }
+
     private static void drawGraphics(BufferedImage image, Problem problem) {
         Graphics2D gr = image.createGraphics();
 
@@ -114,12 +138,53 @@ public class ProblemVisualizer extends Frame {
         plotVertices(gr, problem);
     }
 
+    private static void drawGraphics(BufferedImage image, Origami origami) {
+        Graphics2D gr = image.createGraphics();
+
+        gr.setPaint(Color.white);
+        gr.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
+
+        plotLines(gr, origami);
+
+        plotGrid(gr);
+
+        plotVertices(gr, origami);
+    }
+
     public static void visualizeProblem(Problem problem, String outputFileName) throws IOException {
         BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
 
         drawGraphics(image, problem);
 
         ImageIO.write(image, "png", new File(outputFileName));
+    }
+
+
+    public static void visualizeOrigami(Origami origami, String outputFileName) throws IOException {
+        BufferedImage image = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
+        java.util.List<Vertex> vertices = origami.vertices;
+        drawGraphics(image, origami);
+        ImageIO.write(image, "png", new File(outputFileName));
+    }
+
+    public static void visualizeFolder(String folderPath) throws IOException {
+        File folder = new File(folderPath);
+        File[] txtList = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".txt");
+            }
+        });
+        for (File file: txtList) {
+            try {
+                Origami origami = ProblemReader.read(file).getOrigami();
+                visualizeOrigami(origami, file.getAbsolutePath().replace(".txt", ".png"));
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
 }
