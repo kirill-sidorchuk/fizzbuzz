@@ -1,5 +1,6 @@
 package com.teamdev.fold;
 
+import com.teamdev.Fraction;
 import com.teamdev.OPolygon;
 import com.teamdev.Vertex;
 
@@ -27,6 +28,10 @@ public class PaperFolderHelper {
 
     public static double getYForLine(FoldLine line, double x){
         return line.getK()*x + line.getC();
+    }
+
+    public static Fraction getYForLine(FoldLine line, Fraction x){
+        return line.getFractionK().mul(x).add(line.getFractionC());
     }
 
 }
