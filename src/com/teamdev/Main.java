@@ -1,26 +1,25 @@
 package com.teamdev;
 
-import com.teamdev.triangulation.PolygonHelper;
-
 import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
-    private static final String TEST_FILE_PATH = "problems/initial";
-    public static int task;
+    private static final String PROBLEMS_PATH = "problems";
 
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
             System.out.println("problem id is expected in command line");
             return;
         }
-        task = Integer.parseInt(args[0]);
         String problemID = args[0];
-        Problem problem = ProblemReader.read(new File(TEST_FILE_PATH, problemID + ".txt"));
-        ProblemVisualizer.visualizeProblem(problem, problemID + ".png");
-        PolygonHelper polygonHelper = new PolygonHelper();
-        polygonHelper.createBufferedImageFromVertices(problem.polygons);
+        Problem problem = ProblemReader.read(new File(PROBLEMS_PATH, problemID + ".txt"));
+        ProblemVisualizer.visualizeProblem(problem, PROBLEMS_PATH + File.separator + problemID + ".png");
+
+        problem.getOrigami();
+
+//        PolygonHelper polygonHelper = new PolygonHelper();
+//        polygonHelper.createBufferedImageFromVertices(problem.polygons);
 
         //    System.out.println(problem.toString());
 

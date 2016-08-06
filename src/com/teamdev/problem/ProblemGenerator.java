@@ -9,7 +9,7 @@ import java.util.List;
 public class ProblemGenerator {
 
     public static void main(String[] args) {
-        int n = 4;
+        int n = 6;
         final int pow = (int) Math.pow(2, n)+1;
         System.out.println(pow*3);
 

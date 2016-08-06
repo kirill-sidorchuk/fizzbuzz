@@ -21,7 +21,7 @@ import java.util.List;
 public class PolygonHelper {
     public static int counter = 0;
 
-    public void createBufferedImageFromVertices(List<OPolygon> polygons) {
+    public void createBufferedImageFromVertices(List<OPolygon> polygons, String problem_spec_name) {
         int sizeCounter = 1;
         ImageData maxPoint = getMaxAndMinPoint(polygons);
         if (maxPoint.getMaxX() < 500) sizeCounter = 3;
@@ -73,7 +73,7 @@ public class PolygonHelper {
                 graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
             }
             //   graphics2D.fillPolygon(xpoint, ypoint, polySize);
-            File file = new File("poly/" + Main.task + "." + counter + ".png");
+            File file = new File("poly/" + problem_spec_name + "." + counter + ".png");
             try {
                 ImageIO.write(bufferedImage, "png", file);
             } catch (Exception e) {
@@ -81,7 +81,7 @@ public class PolygonHelper {
             }
             counter++;
         }
-        File file = new File("poly/" + Main.task + "." + "final" + ".png");
+        File file = new File("poly/" + problem_spec_name + "." + "final" + ".png");
         try {
             ImageIO.write(bufferedImageFinal, "png", file);
         } catch (Exception e) {

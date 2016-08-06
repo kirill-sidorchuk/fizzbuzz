@@ -83,4 +83,64 @@ public class Problem {
                 ", lineSegments=" + lineSegments +
                 '}';
     }
+
+    public Origami getOrigami() {
+        if( polygons.size() > 1 ) throw new RuntimeException("multi-polygonal problems not supported");
+
+        OPolygon polygon = polygons.get(0);
+
+        Fraction area = polygon.calcArea();
+        System.out.println("polygon area = " + area + " = " + area.getFloatValue());
+
+        Origami origami = new Origami();
+
+        // adding external vertices (from silhouette)
+        origami.vertices.addAll(polygon.vertices);
+        origami.nContourVertices = polygon.vertices.size();
+
+        for (Vertex v : origami.vertices) {
+            v.external = true;
+        }
+
+        // adding external edges
+        for( int i=0; i<polygon.vertices.size(); ++i) {
+            int i1 = (i + 1) % polygon.vertices.size();
+            Edge e = new Edge(i, i1, true);
+
+            // adding links
+            origami.vertices.get(i).addEdge(e);
+            origami.vertices.get(i1).addEdge(e);
+            origami.edges.add(e);
+        }
+
+        // adding hidden vertices and internal edges
+        for (LineSegment seg : lineSegments) {
+            seg.v1.external = false;
+            seg.v2.external = false;
+
+            int i1 = origami.vertices.indexOf(seg.v1);
+            if( i1 == -1 ) {
+                i1 = origami.vertices.size();
+                origami.vertices.add(seg.v1);
+            }
+            int i2 = origami.vertices.indexOf(seg.v2);
+            if( i2 != -1 ) {
+                i2 = origami.vertices.size();
+                origami.vertices.add(seg.v2);
+            }
+
+            Edge e = new Edge(i1, i2, false);
+            if( !origami.edges.contains(e) ) {
+                origami.edges.add(e);
+                origami.vertices.get(i1).addEdge(e);
+                origami.vertices.get(i2).addEdge(e);
+            }
+        }
+
+        // searching for facets
+        
+
+        return origami;
+    }
+
 }

@@ -66,4 +66,18 @@ public class OPolygon {
         }
         return result;
     }
+
+    public Fraction calcArea() {
+        Fraction area = new Fraction(0,1);
+        int j = vertices.size()-1;  // The last vertex is the 'previous' one to the first
+
+        for (int i=0; i<vertices.size(); i++)
+        {
+            final Vertex vi = vertices.get(i);
+            final Vertex vj = vertices.get(j);
+            area = area.add((vj.x.add(vi.x)).mul(vj.y.sub(vi.y)));
+            j = i;  //j is previous vertex to i
+        }
+        return area.div(2).inv().normalize();
+    }
 }

@@ -64,11 +64,8 @@ public class Converter {
             Fraction x = subFraction(new Fraction(vertex.nXBig, vertex.dXBig), new Fraction(nXShift, dXShift));
             Fraction y = subFraction(new Fraction(vertex.nYBig, vertex.dYBig), new Fraction(nYShift, dYShift));
 
-            vertex.nX = x.n.longValue();
-            vertex.dX = x.d.longValue();
-
-            vertex.nY = y.n.longValue();
-            vertex.dY = y.d.longValue();
+            vertex.x = new com.teamdev.Fraction(x.n.longValue(), x.d.longValue());
+            vertex.y = new com.teamdev.Fraction(y.n.longValue(), y.d.longValue());
 
             vertex.shifted = true;
         }
