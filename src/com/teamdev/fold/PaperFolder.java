@@ -49,7 +49,7 @@ public class PaperFolder {
 
             rightPolygon.add(topPoint);
             leftPolygon.add(bottomPoint);
-            result.add(new OPolygon(rightPolygon));
+            //result.add(new OPolygon(rightPolygon));
             result.add(new OPolygon(revertPolygon(leftPolygon, line)));
         }
 

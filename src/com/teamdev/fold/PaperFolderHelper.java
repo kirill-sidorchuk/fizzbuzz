@@ -17,15 +17,11 @@ public class PaperFolderHelper {
 
         final Random random = new Random();
 
-        //final Vertex v1 = new Vertex(random.nextInt(32), 32, random.nextInt(32), 32);
-        //final Vertex v2 = new Vertex(random.nextInt(32), 32, random.nextInt(32), 32);
+        final Vertex v1 = new Vertex(random.nextInt(32), 32, random.nextInt(32), 32);
+        final Vertex v2 = new Vertex(random.nextInt(32), 32, random.nextInt(32), 32);
 
-        /*final Vertex v1 = new Vertex(1, 32, 28, 32);
-        final Vertex v2 = new Vertex(22, 32, 16, 32);*/
-
-        final Vertex v1 = new Vertex(0, 1, 1, 1);
-        final Vertex v2 = new Vertex(1, 1, 0, 1);
-
+        //final Vertex v1 = new Vertex(1, 32, 28, 32);
+        //final Vertex v2 = new Vertex(22, 32, 16, 32);
 
         System.out.println("p1: (" + v1 + ") p2:(" + v2 + ") FLOAT: " +
                 "( " + v1.getFloatX() + "," + v1.getFloatY() + " ) " +
