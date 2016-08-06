@@ -73,6 +73,10 @@ public class Fraction implements Comparable<Fraction> {
         return new Fraction(n*f.n, d*f.d).normalize();
     }
 
+    public Fraction div(Fraction x){
+        return new Fraction(n*x.d, d*x.n).normalize();
+    }
+
     public Fraction div(long v) {
         return new Fraction(n, d*v);
     }

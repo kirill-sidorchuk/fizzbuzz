@@ -43,7 +43,7 @@ public class PaperVisualizer {
             gr.setColor(Color.red);
             gr.setStroke(new BasicStroke(3));
 
-            final float x1 = 0;
+            final float x1 = -1;
             final float x2 = 2;
 
             gr.drawLine(transformXCoordinate(x1), transformYCoordinate(getYForLine(foldLine, x1)),
