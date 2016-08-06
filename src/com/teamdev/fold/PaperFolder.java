@@ -41,9 +41,9 @@ public class PaperFolder {
             leftPolygon.add(topPoint);
             for (Vertex v : polygon.vertices) {
                 if(cmpWithLine(line, v) < 0){ // if on the right side, push to
-                    rightPolygon.add(v);
-                } else if(cmpWithLine(line, v) > 0){
                     leftPolygon.add(v);
+                } else if(cmpWithLine(line, v) > 0){
+                    rightPolygon.add(v);
                 }
             }
 

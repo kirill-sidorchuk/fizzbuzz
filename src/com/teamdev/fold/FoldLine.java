@@ -26,7 +26,7 @@ public class FoldLine {
         //k = -1 * (bottomPoint.y - topPoint.y) / ()
         //c = -1 * ( bottomPoint.x * topPoint.y - topPoint.x * bottomPoint.y )
         this.fractionK = new Fraction(-1, 1).mul(bottomPoint.y.sub(topPoint.y).div(topPoint.x.sub(bottomPoint.x)));
-        this.fractionC = new Fraction(-1, 1).mul(bottomPoint.x.mul(topPoint.y).sub(topPoint.x.mul(bottomPoint.y)));
+        this.fractionC = new Fraction(1, 1).mul(bottomPoint.x.mul(topPoint.y).sub(topPoint.x.mul(bottomPoint.y)));
         this.k = this.fractionK.getFloatValue();
         this.c = this.fractionC.getFloatValue();
     }
