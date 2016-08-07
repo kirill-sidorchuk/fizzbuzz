@@ -2,28 +2,48 @@ package com.teamdev;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by kirill.sidorchuk on 8/7/2016.
  */
 public class ProblemSubmitter {
 
-    public static void main(String[] args) {
+    public static final int REQUEST_SLEEP_MS = 1200;
+
+    public static void main(String[] args) throws IOException {
         File srcDir = new File(args[0]);
 
+        if( srcDir.isDirectory() )
+            submitSolutions(srcDir);
+        else
+            submitBlindSquares(srcDir);
+    }
+
+    private static void submitBlindSquares(File idsFile) throws IOException {
+        List<String> ids = Utils.readLines(idsFile);
+        Set<String> idsSet = new HashSet<>(ids);
+        File blindSquareSolution = new File("problems/initial/1_solution.txt");
+        for (String id : idsSet) {
+            submit(blindSquareSolution, id);
+
+            try {
+                Thread.sleep(REQUEST_SLEEP_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void submitSolutions(File srcDir) {
         File[] solutionFiles = listSolutions(srcDir);
 
         for (File solutionFile : solutionFiles) {
             try {
 
-                File resultFile = new File(solutionFile.getPath().replace("_solution.txt", "_result.txt"));
-                boolean isPerfetlySolved = false;
-                try {
-                    List<String> lines = Utils.readLines(resultFile);
-                    isPerfetlySolved = lines.get(0).equals("1.0");
-                } catch (IOException e) {
-                }
+                boolean isPerfetlySolved = Utils.isPerfetlySolved(solutionFile);
 
                 if( isPerfetlySolved ) continue;
 
@@ -41,7 +61,7 @@ public class ProblemSubmitter {
                 }
                 else {
                     System.out.println("resemblance = " + resemblanceString);
-                    Utils.writeStringToFile(resultFile, resemblanceString);
+                    Utils.writeStringToFile(Utils.getResultFile(solutionFile), resemblanceString);
 
 //                    if( resemblanceString.equals("1.0")) {
 //                        System.out.println("Solved PERFECTLY: " + solutionFile);
@@ -52,9 +72,15 @@ public class ProblemSubmitter {
                 e.printStackTrace();
             }
         }
+
     }
 
     private static String submit(File solutionFile) throws IOException {
+        String id = solutionFile.getName().replace("_solution.txt", "");
+        return submit(solutionFile, id);
+    }
+
+    private static String submit(File solutionFile, String id) throws IOException {
         List<String> args = new ArrayList<>();
         args.add("--compressed");
         args.add("-L");
@@ -63,7 +89,6 @@ public class ProblemSubmitter {
         args.add("-H");
         args.add("\"X-API-Key: 175-e9b9b81095330bbeed88bef333785d74\"");
         args.add("-F");
-        String id = solutionFile.getName().replace("_solution.txt", "");
         args.add("\"problem_id=" + id + "\"");
         args.add("-F");
         args.add("\"solution_spec=@" + solutionFile.getPath().replace("\\", "/") + "\"");

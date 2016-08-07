@@ -100,12 +100,8 @@ public class OPolygon {
 
     public void moveToCenter(Vertex newCenter) {
         Vertex center = getCenter();
-        System.out.println(center);
-        System.out.println(newCenter);
         Fraction xShift = newCenter.x.sub(center.x);
         Fraction yShift = newCenter.y.sub(center.y);
-        System.out.println(xShift);
-        System.out.println(yShift);
         Vertex shiftVertex = new Vertex(xShift, yShift);
 
         this.vertices = this.vertices.stream().map(vertex -> vertex.add(shiftVertex)).collect(Collectors.toList());

@@ -200,7 +200,7 @@ public class ProblemVisualizer extends Frame {
             @Override
             public boolean accept(File dir, String name)
             {
-                return name.endsWith(".txt") && !name.contains("_solution");
+                return name.endsWith(".txt") && !name.contains("_solution") && !name.contains("_result");
             }
         });
         for (File file: txtList) {

@@ -36,6 +36,10 @@ public class Solution {
         return new Solution(v, facets, v);
     }
 
+//    public static Solution getSquareSolution() {
+//
+//    }
+
     public String toStringFormat() {
         String result = "";
         result += sourcePositions.size() + "\n";
