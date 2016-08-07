@@ -32,11 +32,13 @@ public class Origami {
             return set.contains(i);
         }
 
-        public void add(int i) {
+        public boolean add(int i) {
             if( !contains(i)) {
                 indexes.add(i);
                 set.add(i);
+                return true;
             }
+            return false;
         }
 
         public Path copy() {
@@ -102,57 +104,70 @@ public class Origami {
 
         for( int startIndex=0; startIndex<vertices.size(); ++startIndex) {
 
-            List<Integer> path = new ArrayList<>();
-            path.add(startIndex);
+            Vertex _S = vertices.get(startIndex);
+            for( int startEdgeIndex=0; startEdgeIndex < _S.edges.size(); ++startEdgeIndex ) {
 
-            int i = startIndex;
-            Vertex S = vertices.get(i);
-            Edge startEdge = S.edges.get(0);
-            int iN = startEdge.otherIndex(i);
+                Path path = new Path();
+                path.add(startIndex);
 
-            while (true)
-            {
-                iN = startEdge.otherIndex(i);
-                if( iN == startIndex) break;
+                int i = startIndex;
+                Vertex S = vertices.get(i);
+                Edge startEdge = S.edges.get(startEdgeIndex);
 
-                path.add(iN);
-                Vertex N = vertices.get(iN);
+                boolean failed = false;
+                while (true) {
+                    int iN = startEdge.otherIndex(i);
+                    if (iN == startIndex) break;
 
-                Vertex NS = N.sub(S);
-
-                // search for left turn
-                double maxAngle = 0;
-                Edge bestEdge = null;
-                for (Edge edge : N.edges) {
-                    if( edge.equals(startEdge)) continue;
-
-                    int iN2 = edge.otherIndex(iN);
-                    Vertex A = vertices.get(iN2);
-                    Vertex AN = A.sub(N);
-                    double sine = NS.getSinus(AN);
-                    double dot = NS.scalarMul(AN).getDoubleValue();
-                    double cosine = dot / Math.sqrt(AN.normSquared().getDoubleValue() * NS.normSquared().getDoubleValue());
-
-                    double angle = Utils.getAngle(sine, cosine);
-                    if (bestEdge == null || angle > maxAngle) {
-                        maxAngle = angle;
-                        bestEdge = edge;
+                    if( !path.add(iN) ) {
+                        failed = true;
+                        break;
                     }
+                    Vertex N = vertices.get(iN);
+
+                    Vertex NS = N.sub(S);
+
+                    // search for left turn
+                    double maxAngle = 0;
+                    Edge bestEdge = null;
+                    for (Edge edge : N.edges) {
+                        if (edge.equals(startEdge)) continue;
+
+                        int iN2 = edge.otherIndex(iN);
+                        Vertex A = vertices.get(iN2);
+                        Vertex AN = A.sub(N);
+                        double sine = NS.getSinus(AN);
+                        double dot = NS.scalarMul(AN).getDoubleValue();
+                        double cosine = dot / Math.sqrt(AN.normSquared().getDoubleValue() * NS.normSquared().getDoubleValue());
+
+                        double angle = Utils.getAngle(sine, cosine);
+                        if (bestEdge == null || angle > maxAngle) {
+                            maxAngle = angle;
+                            bestEdge = edge;
+                        }
+                    }
+
+                    i = iN;
+                    S = N;
+                    startEdge = bestEdge;
                 }
 
-                i = iN;
-                S = N;
-                startEdge = bestEdge;
-            }
-
-            // validating facet
-            Fraction area = OPolygon.calcArea(path, vertices);
-            if( area.n > 0 ) {
-                paths.add(new Path(path));
+                // validating facet
+                if( !failed ) {
+                    Fraction area = OPolygon.calcArea(path.indexes, vertices);
+                    if (area.n > 0) {
+                        paths.add(path);
+                    }
+                }
             }
         }
 
-        System.out.println("facets = " + paths.size());
+
+        // converting
+        for (Path p : paths) {
+            Facet facet = new Facet(p.indexes);
+            facets.add(facet);
+        }
     }
 
     private void traverseOld(int iStart, int iFromWhere, Path path, List<Vertex> vertices, Set<Path> foundFacets) {

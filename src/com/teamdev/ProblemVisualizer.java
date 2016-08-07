@@ -198,8 +198,9 @@ public class ProblemVisualizer extends Frame {
         File folder = new File(folderPath);
         File[] txtList = folder.listFiles(new FilenameFilter() {
             @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".txt");
+            public boolean accept(File dir, String name)
+            {
+                return name.endsWith(".txt") && !name.contains("_solution");
             }
         });
         for (File file: txtList) {
@@ -221,7 +222,7 @@ public class ProblemVisualizer extends Frame {
     }
 
     public static void main(String[] args) throws IOException {
-        visualizeOrigamiFile(new File("problems/initial/10.txt"));
-//        visualizeFolder(args[0]);
+//        visualizeOrigamiFile(new File("problems/initial/15.txt"));
+        visualizeFolder(args[0]);
     }
 }
