@@ -71,8 +71,9 @@ public class ProblemSubmitter {
             try {
 
                 boolean isPerfetlySolved = Utils.isPerfetlySolved(solutionFile);
+                boolean isSolved = Utils.isSolved(solutionFile);
 
-                if( isPerfetlySolved ) continue;
+                if( isPerfetlySolved && isSolved ) continue;
 
                 System.out.println("\nSubmitting: " + solutionFile.getName());
 

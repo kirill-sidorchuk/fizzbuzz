@@ -60,6 +60,24 @@ public class Utils {
         return isPerfetlySolved;
     }
 
+    public static boolean isSolved(File solutionFile) {
+        File resultFile = getResultFile(solutionFile);
+        boolean isSolved = false;
+        try {
+            List<String> lines = readLines(resultFile);
+            String s = lines.get(0);
+            boolean parsable = true;
+            try {
+                Double.parseDouble(s);
+            } catch (NumberFormatException e) {
+                parsable = false;
+            }
+            isSolved = !s.equals("0.0") && parsable;
+        } catch (IOException e) {
+        }
+        return isSolved;
+    }
+
     public static File getSolutionFile(File problemFile) {
         return new File(problemFile.getPath().replace(".txt", "_solution.txt"));
     }

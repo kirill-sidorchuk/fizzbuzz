@@ -1,5 +1,7 @@
 package com.teamdev;
 
+import java.math.BigInteger;
+
 /**
  * Created by kirill.sidorchuk on 8/7/2016.
  */
@@ -17,6 +19,6 @@ public class FoldVector {
     }
 
     public boolean isFlips(Vertex V) {
-        return direction.vect_prod_z(V.sub(base)).n < 0;
+        return direction.vect_prod_z(V.sub(base)).n.compareTo(BigInteger.ZERO) < 0;
     }
 }

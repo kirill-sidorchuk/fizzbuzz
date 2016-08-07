@@ -19,27 +19,9 @@ public class LineSegment {
 
     @Override
     public String toString() {
-        String result = "";
-
-        String vdx1_str = "";
-        if (v1.x.d != 1) {
-            vdx1_str = "/" + v1.x.d;
-        }
-        String vdy1_str = "";
-        if (v1.y.d != 1) {
-            vdy1_str = "/" + v1.y.d;
-        }
-        String vdx2_str = "";
-        if (v2.x.d != 1) {
-            vdx2_str = "/" + v2.x.d;
-        }
-        String vdy2_str = "";
-        if (v2.y.d != 1) {
-            vdy2_str = "/" + v2.y.d;
-        }
-        result += v1.x.n + vdx1_str + "," + v1.y.n + vdy1_str + " "
-                + v2.x.n + vdx2_str + "," + v2.y.n + vdy2_str;
-
-        return result;
+        return "LineSegment{" +
+                "v1=" + v1 +
+                ", v2=" + v2 +
+                '}';
     }
 }

@@ -1,30 +1,64 @@
 package com.teamdev;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by dmitriy.kuzmin on 8/6/2016.
  */
 public class Fraction implements Comparable<Fraction> {
-    public long n;
-    public long d;
 
-    public Fraction(long n, long d) {
+    static List<BigInteger> primes = new ArrayList<>();
+
+    static {
+        primes.add(BigInteger.valueOf(2));
+        primes.add(BigInteger.valueOf(5));
+        primes.add(BigInteger.valueOf(7));
+        primes.add(BigInteger.valueOf(11));
+        primes.add(BigInteger.valueOf(13));
+        primes.add(BigInteger.valueOf(17));
+        primes.add(BigInteger.valueOf(19));
+        primes.add(BigInteger.valueOf(23));
+        primes.add(BigInteger.valueOf(29));
+        primes.add(BigInteger.valueOf(31));
+        primes.add(BigInteger.valueOf(37));
+        primes.add(BigInteger.valueOf(41));
+        primes.add(BigInteger.valueOf(43));
+        primes.add(BigInteger.valueOf(53));
+        primes.add(BigInteger.valueOf(59));
+        primes.add(BigInteger.valueOf(61));
+        primes.add(BigInteger.valueOf(67));
+    }
+
+    public BigInteger n;
+    public BigInteger d;
+
+    public Fraction(BigInteger n, BigInteger d) {
         this.n = n;
         this.d = d;
     }
 
+    public Fraction(long n, long d) {
+        this.n = BigInteger.valueOf(n);
+        this.d = BigInteger.valueOf(d);
+    }
+
     public Fraction(long n) {
-        this.n = n;
-        this.d = 1;
+        this.n = BigInteger.valueOf(n);
+        this.d = BigInteger.ONE;
     }
 
     public Fraction() {
-        this.n = 0;
-        this.d = 1;
+        this.n = BigInteger.ZERO;
+        this.d = BigInteger.ONE;
     }
 
-    public float getFloatValue() {
-        return (float) ((double) n / (double) d);
+    public float getFloatValue()
+    {
+        return n.floatValue() / d.floatValue();
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -33,13 +67,13 @@ public class Fraction implements Comparable<Fraction> {
 
         Fraction fraction = (Fraction) o;
 
-        return n == fraction.n && d == fraction.d;
+        return n != null ? n.equals(fraction.n) : fraction.n == null && (d != null ? d.equals(fraction.d) : fraction.d == null);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (n ^ (n >>> 32));
-        result = 31 * result + (int) (d ^ (d >>> 32));
+        int result = n != null ? n.hashCode() : 0;
+        result = 31 * result + (d != null ? d.hashCode() : 0);
         return result;
     }
 
@@ -98,67 +132,76 @@ public class Fraction implements Comparable<Fraction> {
         return 1;
     }
 
+
+    public BigInteger common_divider(BigInteger a, BigInteger b) {
+        for (BigInteger prime : primes) {
+            if( a.mod(prime).equals(BigInteger.ZERO) &&
+                b.mod(prime).equals(BigInteger.ZERO))
+                return prime;
+        }
+        return BigInteger.ONE;
+    }
+
     public Fraction normalize() {
-        if (n == 0)
-            d = 1;
+        if (n.equals(BigInteger.ZERO))
+            d = BigInteger.ONE;
         else {
             while (true){
-                long x = common_divider(n, d);
-                if (x == 1) break;
-                n /= x;
-                d /= x;
+                BigInteger x = common_divider(n, d);
+                if (x.equals(BigInteger.ONE)) break;
+                n = n.divide(x);
+                d = d.divide(x);
             }
 
-            if (d < 0) {
-                d = -d;
-                n = -n;
+            if (d.compareTo(BigInteger.ZERO) < 0) {
+                d = d.negate();
+                n = n.negate();
             }
         }
         return this;
     }
 
     public Fraction add(Fraction f) {
-        long _n = n * f.d + f.n * d;
-        long _d = d * f.d;
+        BigInteger _n = n.multiply(f.d).add(f.n.multiply(d));
+        BigInteger _d = d.multiply(f.d);
         return new Fraction(_n, _d).normalize();
     }
 
     public Fraction sub(Fraction f) {
-        long _n = n * f.d - f.n * d;
-        long _d = d * f.d;
+        BigInteger _n = n.multiply(f.d).subtract(f.n.multiply(d));
+        BigInteger _d = d.multiply(f.d);
         return new Fraction(_n, _d).normalize();
     }
 
     public Fraction mul(Fraction f) {
-        return new Fraction(n * f.n, d * f.d).normalize();
+        return new Fraction(n.multiply(f.n), d.multiply(f.d)).normalize();
     }
 
     public Fraction div(Fraction x) {
-        return new Fraction(n * x.d, d * x.n).normalize();
+        return new Fraction(n.multiply(x.d), d.multiply(x.n)).normalize();
     }
 
     public Fraction div(long v) {
-        return new Fraction(n, d * v);
+        return new Fraction(n, d.multiply(BigInteger.valueOf(v)));
     }
 
     @Override
     public int compareTo(Fraction o) {
         Fraction diff = sub(o);
-        if (diff.n == 0) return 0;
-        return diff.n < 0 ? -1 : +1;
+        return diff.n.compareTo(BigInteger.ZERO);
     }
 
     @Override
     public String toString() {
-        return "Fraction{" + n + "/" + d + "}";
+        return "Fraction{" + n.toString() + "/" + d.toString() + "}";
     }
 
     public Fraction inv() {
-        return new Fraction(-n, d);
+        return new Fraction(n.negate(), d);
     }
 
     public double getDoubleValue() {
-        return (double) n / (double) d;
+        return n.doubleValue() / d.doubleValue();
     }
 
 }

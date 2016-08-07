@@ -2,6 +2,7 @@ package com.teamdev;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +65,8 @@ public class ImperfectSolver {
 
                 Origami[] origamis = origami.fold(foldVector);
 
-                base.x.d *= 2;
-                base.y.d *= 2;
+                base.x.d = base.x.d.multiply(BigInteger.valueOf(2));
+                base.y.d = base.y.d.multiply(BigInteger.valueOf(2));
                 base.normalize();
             }
 
@@ -130,10 +131,10 @@ public class ImperfectSolver {
 
         for (File problemFile : problemFiles) {
             try {
-                System.out.println("reading " + problemFile.getName());
                 File solutionFile = Utils.getSolutionFile(problemFile);
                 if( Utils.isPerfetlySolved(solutionFile)) continue;
 
+                System.out.println("solving " + problemFile.getName());
                 Problem problem = null;
                 try {
                     problem = ProblemReader.read(problemFile);
