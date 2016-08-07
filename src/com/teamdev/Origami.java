@@ -108,10 +108,13 @@ public class Origami {
             int i = startIndex;
             Vertex S = vertices.get(i);
             Edge startEdge = S.edges.get(0);
+            int iN = startEdge.otherIndex(i);
 
             while (true)
             {
-                int iN = startEdge.otherIndex(i);
+                iN = startEdge.otherIndex(i);
+                if( iN == startIndex) break;
+
                 path.add(iN);
                 Vertex N = vertices.get(iN);
 
@@ -140,8 +143,6 @@ public class Origami {
                 i = iN;
                 S = N;
                 startEdge = bestEdge;
-
-                if( i == startIndex ) break;
             }
 
             // validating facet
@@ -150,6 +151,8 @@ public class Origami {
                 paths.add(new Path(path));
             }
         }
+
+        System.out.println("facets = " + paths.size());
     }
 
     private void traverseOld(int iStart, int iFromWhere, Path path, List<Vertex> vertices, Set<Path> foundFacets) {
