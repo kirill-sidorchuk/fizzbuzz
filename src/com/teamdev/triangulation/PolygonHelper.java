@@ -4,6 +4,7 @@ import com.teamdev.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.font.OpenType;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -120,8 +121,9 @@ public class PolygonHelper {
 
     public float getPolygonArea(int[] xpoint, int[] ypoint, int polySize, List<TrianglePolygon> trianglePolygons) {
         List<TrianglePolygon> resultPolygons = getTriangles(createTriangulationPointFirst(xpoint, ypoint, polySize));
-        if (resultPolygons == null) resultPolygons= getTriangles(createTriangulationPointSecond(xpoint, ypoint, polySize));
-        if(resultPolygons == null)   throw new IllegalArgumentException("У Сережи кривые руки");
+        if (resultPolygons == null)
+            resultPolygons = getTriangles(createTriangulationPointSecond(xpoint, ypoint, polySize));
+        if (resultPolygons == null) throw new IllegalArgumentException("У Сережи кривые руки");
         trianglePolygons.addAll(resultPolygons);
         float square = 0;
         for (TrianglePolygon polygon : trianglePolygons) {
@@ -250,4 +252,67 @@ public class PolygonHelper {
         }
         return true;
     }
+
+    public float getPolygonsAnd(OPolygon p1, OPolygon p2) {
+        List<Vertex> andVertices = new ArrayList<>();
+
+    }
+
+    private boolean isPointInside(OPolygon p1, Vertex point){
+        if(p1.vertices.size()<=0) return false;
+        int intersections_num = 0;
+        int prev = p1.vertices.size() - 1;
+        boolean prev_under = p1.vertices.get(prev).y.getDoubleValue() < point.y.getDoubleValue();
+        for (int i = 0; i < p1.vertices.size(); ++i)
+        {
+            boolean cur_under = p1.vertices.get(i).y.getDoubleValue() < point.y.getDoubleValue();
+
+            Vertex a = new Vertex(p1.vertices.get(prev).x.sub(point.x),(p1.vertices.get(prev).y.sub(point.y)));
+            Vertex b = new Vertex(p1.vertices.get(i).x.sub(point.x),(p1.vertices.get(i).y.sub(point.y)));
+
+            float t = (a.x*(b.y - a.y) - a.y*(b.x - a.x));
+            if (cur_under && !prev_under)
+            {
+                if (t > 0)
+                    intersections_num += 1;
+            }
+    }
+    /*
+    *
+bool IsPointInside(Array<const Point2f> polygon, Point2f point)
+{
+    if (polygon.size <= 1)
+        return false;
+
+    int intersections_num = 0;
+    int prev = polygon.size - 1;
+    bool prev_under = polygon[prev].y < point.y;
+
+    for (int i = 0; i < polygon.size; ++i)
+    {
+        bool cur_under = polygon[i].y < point.y;
+
+        Point2f a = polygon[prev] - point;
+        Point2f b = polygon[i]  - point;
+
+        float t = (a.x*(b.y - a.y) - a.y*(b.x - a.x));
+        if (cur_under && !prev_under)
+        {
+            if (t > 0)
+                intersections_num += 1;
+        }
+        if (!cur_under && prev_under)
+        {
+            if (t < 0)
+                intersections_num += 1;
+        }
+
+        prev = i;
+        prev_under = cur_under;
+    }
+
+    return (intersections_num&1) != 0;
+}
+    *
+    * */
 }
