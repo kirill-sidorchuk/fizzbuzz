@@ -5,6 +5,7 @@ package com.teamdev.restApi;
  */
 public class ConstantParametrs {
     public static final String HELLO_TEST_GET_URL = "http://2016sv.icfpcontest.org/api/hello";
+    public static final String BLOB_LOOKUP_GET_URL =  "http://2016sv.icfpcontest.org/api/blob/";
     public static final String STATUS_QUERY_GET_URL =  "http://2016sv.icfpcontest.org/api/snapshot/list";
     public static final String PROBLEM_SUBMIT_POST_URL =  "http://2016sv.icfpcontest.org/api/problem/submit";
     public static final String SOLUTION_SUBMIT_POST_URL =  "http://2016sv.icfpcontest.org/api/solution/submit";
