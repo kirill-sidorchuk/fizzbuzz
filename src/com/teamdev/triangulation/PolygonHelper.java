@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.OpenType;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +24,17 @@ import java.util.List;
 public class PolygonHelper {
     public static int counter = 0;
 
-    public void createBufferedImageFromVertices(List<OPolygon> polygons, String problem_spec_name) {
+    public List<BufferedImage> createBufferedImageFromVertices(List<OPolygon> polygons, String problem_spec_name) {
         int sizeCounter = 1;
         ImageData maxPoint = getMaxAndMinPoint(polygons);
         if (maxPoint.getMaxX() < 500) sizeCounter = 3;
         BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
+        List<BufferedImage> finalImages = new ArrayList<>();
+        finalImages.add(bufferedImageFinal);
         for (OPolygon polygon : polygons) {
-            drawPolygon(polygon, maxPoint, bufferedImageFinal, problem_spec_name);
+            finalImages.add(drawPolygon(polygon, maxPoint, bufferedImageFinal, problem_spec_name));
         }
+        return finalImages;
     }
 
     public void findAndPolygon(List<OPolygon> polygons, String problem_spec_name) {
@@ -43,7 +47,7 @@ public class PolygonHelper {
     }
 
 
-    private void drawPolygon(OPolygon polygon, ImageData maxPoint, BufferedImage bufferedImageFinal, String problem_spec_name) {
+    private BufferedImage drawPolygon(OPolygon polygon, ImageData maxPoint, BufferedImage bufferedImageFinal, String problem_spec_name) {
         int sizeCounter = 1;
         if (maxPoint.getMaxX() < 500) sizeCounter = 3;
         BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
@@ -99,6 +103,7 @@ public class PolygonHelper {
             e.printStackTrace();
         }
         counter++;
+        return bufferedImage;
     }
 
     private ImageData getMaxAndMinPoint(List<OPolygon> polygons) {
@@ -157,6 +162,16 @@ public class PolygonHelper {
         }
         return square;
     }
+
+    public int getPolygonPixelArea(BufferedImage bufferedImage) {
+        int area = 0;
+        byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+        for (int i = 0; i < data.length; i += 3) {
+            if(data[i] != 0 ||  data[i] != 0 || data[i] != 0) area ++;
+        }
+        return area;
+    }
+
 
     private TriangulationPoint createTriangulationPointFirst(int[] xpoint, int[] ypoint, int polySize) {
         TriangulationPoint start = new TriangulationPoint();
