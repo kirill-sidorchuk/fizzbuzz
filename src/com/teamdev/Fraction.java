@@ -92,7 +92,7 @@ public class Fraction implements Comparable<Fraction> {
         if (n == 0)
             d = 1;
         else {
-            for (int i = 0; i < 20; ++i) {
+            while (true){
                 long x = common_divider(n, d);
                 if (x == 1) break;
                 n /= x;
