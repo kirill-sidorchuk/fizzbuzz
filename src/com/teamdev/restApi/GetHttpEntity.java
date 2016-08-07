@@ -24,7 +24,7 @@ public class GetHttpEntity {
     }
     public HttpEntity getGetRequest(String url, String hash) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(url+"/"+ hash);
+        HttpGet httpGet = new HttpGet(url+ "/" +hash);
         httpGet.addHeader("X-API-Key", apiKey);
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
