@@ -1,6 +1,7 @@
 package com.teamdev.triangulation;
 
 import com.teamdev.*;
+import com.teamdev.fold.FoldLine;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,67 +28,77 @@ public class PolygonHelper {
         ImageData maxPoint = getMaxAndMinPoint(polygons);
         if (maxPoint.getMaxX() < 500) sizeCounter = 3;
         BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
-        Graphics2D graphics2DFinal = bufferedImageFinal.createGraphics();
         for (OPolygon polygon : polygons) {
-            BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
-            int polySize = polygon.vertices.size();
-            Graphics2D graphics2D = bufferedImage.createGraphics();
-            int[] xpoint = new int[polySize];
-            int[] ypoint = new int[polySize];
-            List<Vertex> vertices = polygon.vertices;
-            for (int i = 0; i < polySize; i++) {
-                xpoint[i] = (int) (ProblemVisualizer.xToPlot(vertices.get(i).getFloatX()) - maxPoint.getMinX()) * sizeCounter;
-                ypoint[i] = (int) (ProblemVisualizer.yToPlot(vertices.get(i).getFloatY()) - maxPoint.getMinY()) * sizeCounter;
-            }
-            List<TrianglePolygon> trianglePolygons = new ArrayList<>();
-            System.out.println(getPolygonArea(xpoint, ypoint, polySize, trianglePolygons));
-            for (int i = 0; i < trianglePolygons.size(); i++) {
-                int[] polyX = new int[3];
-                int[] polyY = new int[3];
-                polyX[0] = trianglePolygons.get(i).x1;
-                polyX[1] = trianglePolygons.get(i).x2;
-                polyX[2] = trianglePolygons.get(i).x3;
-                polyY[0] = trianglePolygons.get(i).y1;
-                polyY[1] = trianglePolygons.get(i).y2;
-                polyY[2] = trianglePolygons.get(i).y3;
-
-                if (i % 3 == 0) {
-                    graphics2D.setColor(Color.red);
-                    graphics2D.fillPolygon(polyX, polyY, 3);
-                } else if (i % 3 == 1) {
-                    graphics2D.setColor(Color.green);
-                    graphics2D.fillPolygon(polyX, polyY, 3);
-                } else {
-                    graphics2D.setColor(Color.blue);
-                    graphics2D.fillPolygon(polyX, polyY, 3);
-                }
-            }
-            graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
-            if (counter % 3 == 0) {
-                graphics2DFinal.setColor(Color.red);
-                graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
-            } else if (counter % 3 == 1) {
-                graphics2DFinal.setColor(Color.green);
-                graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
-            } else {
-                graphics2DFinal.setColor(Color.blue);
-                graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
-            }
-            //   graphics2D.fillPolygon(xpoint, ypoint, polySize);
-            File file = new File("poly/" + problem_spec_name + "." + counter + ".png");
-            try {
-                ImageIO.write(bufferedImage, "png", file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            counter++;
+            drawPolygon(polygon, maxPoint, bufferedImageFinal, problem_spec_name);
         }
-        File file = new File("poly/" + problem_spec_name + "." + "final" + ".png");
+    }
+
+    public void findAndPolygon(List<OPolygon> polygons, String problem_spec_name) {
+        int sizeCounter = 1;
+        ImageData maxPoint = getMaxAndMinPoint(polygons);
+        if (maxPoint.getMaxX() < 500) sizeCounter = 3;
+        BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
+        OPolygon polygon = getPolygonsAnd(polygons.get(0), polygons.get(1));
+        drawPolygon(polygon, maxPoint, bufferedImageFinal, problem_spec_name);
+    }
+
+
+    private void drawPolygon(OPolygon polygon, ImageData maxPoint, BufferedImage bufferedImageFinal, String problem_spec_name) {
+        int sizeCounter = 1;
+        if (maxPoint.getMaxX() < 500) sizeCounter = 3;
+        BufferedImage bufferedImage = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
+        Graphics2D graphics2DFinal = bufferedImageFinal.createGraphics();
+        int polySize = polygon.vertices.size();
+        Graphics2D graphics2D = bufferedImage.createGraphics();
+        int[] xpoint = new int[polySize];
+        int[] ypoint = new int[polySize];
+        List<Vertex> vertices = polygon.vertices;
+        for (int i = 0; i < polySize; i++) {
+            xpoint[i] = (int) (ProblemVisualizer.xToPlot(vertices.get(i).getFloatX()) - maxPoint.getMinX()) * sizeCounter;
+            ypoint[i] = (int) (ProblemVisualizer.yToPlot(vertices.get(i).getFloatY()) - maxPoint.getMinY()) * sizeCounter;
+        }
+        List<TrianglePolygon> trianglePolygons = new ArrayList<>();
+        System.out.println(getPolygonArea(xpoint, ypoint, polySize, trianglePolygons));
+        for (int i = 0; i < trianglePolygons.size(); i++) {
+            int[] polyX = new int[3];
+            int[] polyY = new int[3];
+            polyX[0] = trianglePolygons.get(i).x1;
+            polyX[1] = trianglePolygons.get(i).x2;
+            polyX[2] = trianglePolygons.get(i).x3;
+            polyY[0] = trianglePolygons.get(i).y1;
+            polyY[1] = trianglePolygons.get(i).y2;
+            polyY[2] = trianglePolygons.get(i).y3;
+
+            if (i % 3 == 0) {
+                graphics2D.setColor(Color.red);
+                graphics2D.fillPolygon(polyX, polyY, 3);
+            } else if (i % 3 == 1) {
+                graphics2D.setColor(Color.green);
+                graphics2D.fillPolygon(polyX, polyY, 3);
+            } else {
+                graphics2D.setColor(Color.blue);
+                graphics2D.fillPolygon(polyX, polyY, 3);
+            }
+        }
+        graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+        if (counter % 3 == 0) {
+            graphics2DFinal.setColor(Color.red);
+            graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+        } else if (counter % 3 == 1) {
+            graphics2DFinal.setColor(Color.green);
+            graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+        } else {
+            graphics2DFinal.setColor(Color.blue);
+            graphics2DFinal.fillPolygon(xpoint, ypoint, polySize);
+        }
+        //   graphics2D.fillPolygon(xpoint, ypoint, polySize);
+        File file = new File("poly/" + problem_spec_name + "." + counter + ".png");
         try {
-            ImageIO.write(bufferedImageFinal, "png", file);
+            ImageIO.write(bufferedImage, "png", file);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        counter++;
     }
 
     private ImageData getMaxAndMinPoint(List<OPolygon> polygons) {
@@ -253,66 +264,44 @@ public class PolygonHelper {
         return true;
     }
 
-    public float getPolygonsAnd(OPolygon p1, OPolygon p2) {
+    public OPolygon getPolygonsAnd(OPolygon p1, OPolygon p2) {
         List<Vertex> andVertices = new ArrayList<>();
-
+        LineHelper lineHelper = new LineHelper();
+        for (int i = 0; i < p2.vertices.size() - 1; i++) {
+            lineHelper.getIntersectionsPolygonsLine(p1, new FoldLine(p2.vertices.get(i), p2.vertices.get(i + 1)), andVertices);
+        }
+        OPolygon polygon = new OPolygon();
+        polygon.vertices = andVertices;
+        return polygon;
     }
 
-    private boolean isPointInside(OPolygon p1, Vertex point){
-        if(p1.vertices.size()<=0) return false;
+    public boolean isPointInside(OPolygon p1, Vertex point) {
+        if (p1.vertices.size() <= 0) return false;
         int intersections_num = 0;
         int prev = p1.vertices.size() - 1;
         boolean prev_under = p1.vertices.get(prev).y.getDoubleValue() < point.y.getDoubleValue();
-        for (int i = 0; i < p1.vertices.size(); ++i)
-        {
+        for (int i = 0; i < p1.vertices.size(); ++i) {
             boolean cur_under = p1.vertices.get(i).y.getDoubleValue() < point.y.getDoubleValue();
 
-            Vertex a = new Vertex(p1.vertices.get(prev).x.sub(point.x),(p1.vertices.get(prev).y.sub(point.y)));
-            Vertex b = new Vertex(p1.vertices.get(i).x.sub(point.x),(p1.vertices.get(i).y.sub(point.y)));
+            Vertex a = new Vertex(p1.vertices.get(prev).x.sub(point.x), (p1.vertices.get(prev).y.sub(point.y)));
+            Vertex b = new Vertex(p1.vertices.get(i).x.sub(point.x), (p1.vertices.get(i).y.sub(point.y)));
 
-            float t = (a.x*(b.y - a.y) - a.y*(b.x - a.x));
-            if (cur_under && !prev_under)
-            {
-                if (t > 0)
+            Fraction t = a.x.mul(b.y.sub(a.y)).sub(a.y.mul(b.x.sub(a.x)));
+            if (cur_under && !prev_under) {
+                if (t.getDoubleValue() > 0)
                     intersections_num += 1;
             }
-    }
-    /*
-    *
-bool IsPointInside(Array<const Point2f> polygon, Point2f point)
-{
-    if (polygon.size <= 1)
-        return false;
 
-    int intersections_num = 0;
-    int prev = polygon.size - 1;
-    bool prev_under = polygon[prev].y < point.y;
+            if (!cur_under && prev_under) {
+                if (t.getDoubleValue() < 0)
+                    intersections_num += 1;
+            }
 
-    for (int i = 0; i < polygon.size; ++i)
-    {
-        bool cur_under = polygon[i].y < point.y;
-
-        Point2f a = polygon[prev] - point;
-        Point2f b = polygon[i]  - point;
-
-        float t = (a.x*(b.y - a.y) - a.y*(b.x - a.x));
-        if (cur_under && !prev_under)
-        {
-            if (t > 0)
-                intersections_num += 1;
-        }
-        if (!cur_under && prev_under)
-        {
-            if (t < 0)
-                intersections_num += 1;
+            prev = i;
+            prev_under = cur_under;
         }
 
-        prev = i;
-        prev_under = cur_under;
+        return (intersections_num & 1) != 0;
     }
 
-    return (intersections_num&1) != 0;
-}
-    *
-    * */
 }

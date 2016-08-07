@@ -11,6 +11,8 @@ public class FoldLine {
     private double c;
     private Fraction fractionK;
     private Fraction fractionC;
+    public Vertex bottomPoint;
+    public Vertex topPoint;
 
     public FoldLine(Fraction k, Fraction c) {
         this.fractionK = k;
@@ -20,8 +22,8 @@ public class FoldLine {
     }
 
     public FoldLine(Vertex v1, Vertex v2) {
-        final Vertex bottomPoint = v1.getFloatY() <= v2.getFloatY() ? v1 : v2;
-        final Vertex topPoint = v1.getFloatY() > v2.getFloatY() ? v1 : v2;
+        bottomPoint = v1.getFloatY() <= v2.getFloatY() ? v1 : v2;
+        topPoint = v1.getFloatY() > v2.getFloatY() ? v1 : v2;
 
         //k = -1 * (bottomPoint.y - topPoint.y) / ()
         //c = -1 * ( bottomPoint.x * topPoint.y - topPoint.x * bottomPoint.y )

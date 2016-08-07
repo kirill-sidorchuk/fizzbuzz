@@ -1,11 +1,13 @@
 package com.teamdev;
 
+import com.teamdev.triangulation.PolygonHelper;
+
 import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
-    private static final String PROBLEMS_PATH = "problems";
+    private static final String PROBLEMS_PATH = "problems\\initial";
 
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
@@ -19,8 +21,8 @@ public class Main {
         Origami origami = problem.getOrigami();
         origami.findFacets();
 
-//        PolygonHelper polygonHelper = new PolygonHelper();
-//        polygonHelper.createBufferedImageFromVertices(problem.polygons);
+        PolygonHelper polygonHelper = new PolygonHelper();
+        polygonHelper.createBufferedImageFromVertices(problem.polygons, problemID);
 
         //    System.out.println(problem.toString());
 
