@@ -74,28 +74,58 @@ public class ProblemSubmitter {
             e.printStackTrace();
         }
 
+        // loading results set
+        Map<String, Float> submittedResults = new HashMap<>();
+        for (File solutionFile : solutionFiles) {
+            String resultString = Utils.getResultString(solutionFile);
+            float r = 0;
+            try {
+                r = Float.parseFloat(resultString);
+            } catch (NumberFormatException e) {
+            }
+            submittedResults.put(solutionFile.getName(), r);
+        }
+
         // sorting solution files
         Arrays.sort(solutionFiles, new Comparator<File>() {
             @Override
             public int compare(File o1, File o2) {
-                int o1p = perfectNamesSet.contains(o1.getName().replace("_solution","")) ? 1 : 0;
-                int o2p = perfectNamesSet.contains(o2.getName().replace("_solution","")) ? 1 : 0;
-                return o2p - o1p;
+                String name1 = o1.getName().replace("_solution", "");
+                String name2 = o2.getName().replace("_solution", "");
+                int o1p = perfectNamesSet.contains(name1) ? 1 : 0;
+                int o2p = perfectNamesSet.contains(name2) ? 1 : 0;
+                Float r1 = submittedResults.get(o1.getName());
+                Float r2 = submittedResults.get(o2.getName());
+                if( r1 == null ) r1 = 0.0f;
+                if( r2 == null ) r2 = 0.0f;
+                if( o1p == 1 || o2p == 1 )
+                    return o2p - o1p;
+
+                if( r1.floatValue() == r2.floatValue() ) return 0;
+                return r1 > r2 ? 1 : -1;
             }
         });
 
         for (File solutionFile : solutionFiles) {
             try {
-
-                boolean isPerfectlySolved = Utils.isPerfetlySolved(solutionFile);
+                boolean isPerfectlySolved = Utils.isPerfectlySolved(solutionFile);
                 boolean isSolved = Utils.isSolved(solutionFile);
 
-                if( isPerfectlySolved || isSolved ) continue;
+                //if( isPerfectlySolved || isSolved ) continue;
+                if( isPerfectlySolved ) continue;
 
-                System.out.println("\nSubmitting: " + solutionFile.getName());
+                System.out.println("\n");
+
+                long solutionSize = calcSolutionSize(solutionFile);
+                if( solutionSize > 5500 ) {
+                    System.out.println("skipping big: " + solutionFile.getName());
+                    continue;
+                }
+
+                System.out.println("Submitting: " + solutionFile.getName());
 
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -103,6 +133,7 @@ public class ProblemSubmitter {
                 String resemblanceString = submit(solutionFile);
                 if( resemblanceString == null ) {
                     System.out.println("Submit failed for: " + solutionFile.getName());
+                    Utils.writeStringToFile(Utils.getResultFile(solutionFile), "2");
                 }
                 else {
                     System.out.println("resemblance = " + resemblanceString);
@@ -123,6 +154,19 @@ public class ProblemSubmitter {
     private static String submit(File solutionFile) throws IOException {
         String id = solutionFile.getName().replace("_solution.txt", "");
         return submit(solutionFile, id);
+    }
+
+    private static long calcSolutionSize(File solutionFile) {
+        long size = 0;
+        try {
+            List<String> lines = Utils.readLines(solutionFile);
+            for (String line : lines) {
+                size += line.trim().replace(" ", "").length();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     private static String submit(File solutionFile, String id) throws IOException {

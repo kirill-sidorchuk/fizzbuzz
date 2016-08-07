@@ -201,7 +201,11 @@ public class ImperfectSolver {
         for (File problemFile : problemFiles) {
             try {
                 File solutionFile = Utils.getSolutionFile(problemFile);
-                if( Utils.isPerfetlySolved(solutionFile)) continue;
+                if( Utils.isPerfectlySolved(solutionFile)) {
+                    perfectSB.append(problemFile.getName()).append("\n");
+                    nPerfectSolutions++;
+                    continue;
+                }
 
                 System.out.println("solving " + problemFile.getName());
                 Problem problem = null;
@@ -221,9 +225,9 @@ public class ImperfectSolver {
                     continue;
                 }
 
-                if( problemFile.getName().equals("1094.txt")) {
-                    System.out.println("s");
-                }
+                //if( problemFile.getName().equals("1094.txt")) {
+                //    System.out.println("s");
+                //}
 
                 Solution solution = getSolution(problem, handCodedSolutions);
                 if( solution.isPerfect ) {

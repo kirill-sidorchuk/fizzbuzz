@@ -49,15 +49,20 @@ public class Utils {
         return new File(solutionFile.getPath().replace("_solution.txt", "_result.txt"));
     }
 
-    public static boolean isPerfetlySolved(File solutionFile) {
+    public static String getResultString(File solutionFile) {
         File resultFile = getResultFile(solutionFile);
-        boolean isPerfetlySolved = false;
+        String resultString = "";
         try {
             List<String> lines = readLines(resultFile);
-            isPerfetlySolved = lines.get(0).equals("1.0");
+            resultString = lines.get(0);
         } catch (IOException e) {
         }
-        return isPerfetlySolved;
+        return resultString;
+    }
+
+    public static boolean isPerfectlySolved(File solutionFile) {
+        String resultString = getResultString(solutionFile);
+        return resultString.equals("1.0");
     }
 
     public static boolean isSolved(File solutionFile) {
