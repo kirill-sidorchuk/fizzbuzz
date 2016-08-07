@@ -25,9 +25,34 @@ public class ProblemSubmitter {
     private static void submitBlindSquares(File idsFile) throws IOException {
         List<String> ids = Utils.readLines(idsFile);
         Set<String> idsSet = new HashSet<>(ids);
+
+        System.out.println("ids to blind submit = " + idsSet.size());
+
+        int countOfPerfectlySolved = 0;
+
         File blindSquareSolution = new File("problems/initial/1_solution.txt");
         for (String id : idsSet) {
-            submit(blindSquareSolution, id);
+
+            File solutionFile = new File("problems/initial/" + id + "_solution.txt");
+            if( solutionFile.exists()) {
+                System.out.println("skipping: " +  solutionFile.getName());
+                continue;
+            }
+
+            System.out.println("submitting: " +  solutionFile.getName());
+
+            String resemblanceString = submit(blindSquareSolution, id);
+            if( resemblanceString == null ) {
+                System.out.println("Submit failed for: " + id);
+            }
+            else {
+                System.out.println("resemblance = " + resemblanceString);
+                if( resemblanceString.equals("1.0")) {
+                    countOfPerfectlySolved++;
+                    System.out.println("countOfPerfectlySolved = " + countOfPerfectlySolved);
+                }
+                Utils.writeStringToFile(Utils.getResultFile(solutionFile), resemblanceString);
+            }
 
             try {
                 Thread.sleep(REQUEST_SLEEP_MS);
@@ -35,6 +60,8 @@ public class ProblemSubmitter {
                 e.printStackTrace();
             }
         }
+
+        System.out.println("countOfPerfectlySolved = " + countOfPerfectlySolved);
     }
 
     private static void submitSolutions(File srcDir) {
