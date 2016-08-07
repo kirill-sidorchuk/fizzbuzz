@@ -144,10 +144,10 @@ public class Vertex {
         return x.mul(v.x).add(y.mul(v.y));
     }
 
-    public float getSinus(Vertex v) {
+    public double getSinus(Vertex v) {
         double vect_prod = vect_prod_z(v).getDoubleValue();
         double norm = Math.sqrt(normSquared().mul(v.normSquared()).getDoubleValue());
-        return (float) (vect_prod / norm);
+        return vect_prod / norm;
     }
 
     public static Vertex average(List<Vertex> list) {

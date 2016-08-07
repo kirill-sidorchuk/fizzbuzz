@@ -109,8 +109,6 @@ public class Origami {
             Vertex S = vertices.get(i);
             Edge startEdge = S.edges.get(0);
 
-            boolean found = true;
-
             while (true)
             {
                 int iN = startEdge.otherIndex(i);
@@ -120,38 +118,35 @@ public class Origami {
                 Vertex NS = N.sub(S);
 
                 // search for left turn
-                float maxSinus = -1;
+                double maxAngle = 0;
                 Edge bestEdge = null;
-                Vertex bestA = null;
                 for (Edge edge : N.edges) {
                     if( edge.equals(startEdge)) continue;
 
                     int iN2 = edge.otherIndex(iN);
                     Vertex A = vertices.get(iN2);
                     Vertex AN = A.sub(N);
-                    float sinus = NS.getSinus(AN);
-                    if (sinus < 0) continue;
-                    if (sinus > maxSinus) {
-                        maxSinus = sinus;
-                        bestEdge = edge;
-                        bestA = A;
-                    }
-                }
+                    double sine = NS.getSinus(AN);
+                    double dot = NS.scalarMul(AN).getDoubleValue();
+                    double cosine = dot / Math.sqrt(AN.normSquared().getDoubleValue() * NS.normSquared().getDoubleValue());
 
-                if( bestEdge == null ) {
-                    found = false;
-                    break;
+                    double angle = Utils.getAngle(sine, cosine);
+                    if (bestEdge == null || angle > maxAngle) {
+                        maxAngle = angle;
+                        bestEdge = edge;
+                    }
                 }
 
                 i = iN;
                 S = N;
-                N = bestA;
                 startEdge = bestEdge;
 
                 if( i == startIndex ) break;
             }
 
-            if( found ) {
+            // validating facet
+            Fraction area = OPolygon.calcArea(path, vertices);
+            if( area.n > 0 ) {
                 paths.add(new Path(path));
             }
         }
