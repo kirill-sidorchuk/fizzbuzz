@@ -25,7 +25,7 @@ public class BlobLoockUp {
         int rc;
         StringBuilder sb = new StringBuilder();
 
-        try(InputStreamReader reader = new InputStreamReader(instream)) {
+        try (InputStreamReader reader = new InputStreamReader(instream)) {
 
             while ((rc = reader.read(buffer)) != -1)
                 sb.append(buffer, 0, rc);
@@ -35,14 +35,14 @@ public class BlobLoockUp {
 
     }
 
-    public void getListProblemHashs(String hash, String fileName) throws ParseException {
+    public void getListProblemHashs(String hash, String fileName) throws ParseException, IOException {
         String obj = null;
         try {
             obj = sendBlobProblemsGet(hash);
         } catch (IOException e) {
             e.printStackTrace();
         }
-     //   System.out.println(obj.toString());
+        //   System.out.println(obj.toString());
 
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject = (JSONObject) jsonParser.parse(obj);
@@ -59,35 +59,25 @@ public class BlobLoockUp {
 //        }
 
 
-
     }
-    private void writeToFile(JSONArray   problems, String fileName){
 
-        // "C:\\workFolder\\projects\\restHttp\\src\\main\\java\\problemIdHash.txt";
-        File f1 = new File(fileName);
-        try {
-            f1.createNewFile();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+    private void writeToFile(JSONArray problems, String fileName) throws IOException {
 
         JSONObject object;
-        StringBuffer buffer = new StringBuffer();
-        String str;
-        for(Object problem: problems) {
+        StringBuilder sb = new StringBuilder();
+        for (Object problem : problems) {
             object = (JSONObject) problem;
-            str = object.get("problem_spec_hash").toString();
-            buffer.append(" "+str+"\n");
+            sb.append(object.get("problem_id").toString());
+            sb.append(" ");
+            sb.append(object.get("problem_spec_hash").toString());
+            sb.append("\n");
         }
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("f1"), "utf-8"))) {
-                writer.write(""+buffer);
-                writer.flush();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName)))) {
+            writer.write(sb.toString());
+            writer.flush();
         }
+    }
 
 
 }

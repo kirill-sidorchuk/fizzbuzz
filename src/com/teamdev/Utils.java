@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Utils {
 
-    static List<String> readLines(File file) throws IOException {
+    public static List<String> readLines(File file) throws IOException {
         List<String> lines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -27,7 +27,7 @@ public class Utils {
         }
     }
 
-    static double getAngle(double sine, double cosine) {
+    public static double getAngle(double sine, double cosine) {
         if( cosine >= 0 ) {
             return Math.asin(sine);
         }
@@ -45,11 +45,11 @@ public class Utils {
         System.out.println(r);
     }
 
-    static File getResultFile(File solutionFile) {
+    public static File getResultFile(File solutionFile) {
         return new File(solutionFile.getPath().replace("_solution.txt", "_result.txt"));
     }
 
-    static boolean isPerfetlySolved(File solutionFile) {
+    public static boolean isPerfetlySolved(File solutionFile) {
         File resultFile = getResultFile(solutionFile);
         boolean isPerfetlySolved = false;
         try {
@@ -60,7 +60,7 @@ public class Utils {
         return isPerfetlySolved;
     }
 
-    static File getSolutionFile(File problemFile) {
+    public static File getSolutionFile(File problemFile) {
         return new File(problemFile.getPath().replace(".txt", "_solution.txt"));
     }
 }
