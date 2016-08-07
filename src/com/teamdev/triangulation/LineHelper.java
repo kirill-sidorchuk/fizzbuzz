@@ -16,7 +16,7 @@ public class LineHelper {
 
     public List<Vertex> getIntersections(OPolygon polygon, FoldLine line) {
         Fraction fractionX1 = new Fraction(0, 1);
-        Fraction fractionX2 = new Fraction(5, 1);
+        Fraction fractionX2 = new Fraction(100, 1);
         Fraction fractionY1 = PaperFolderHelper.getYForLine(line, fractionX1);
         Fraction fractionY2 = PaperFolderHelper.getYForLine(line, fractionX2);
         List<Vertex> intersectionPoints = new ArrayList<>();
