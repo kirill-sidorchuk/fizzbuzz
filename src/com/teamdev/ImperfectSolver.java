@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ImperfectSolver {
 
-    public static Solution getSolution(Problem problem) {
+    public static Solution getSolution(Problem problem, List<Solution> handCodedProblems) {
         // blind square solver
         // return blindSquareSolution();
 
@@ -27,8 +27,37 @@ public class ImperfectSolver {
 //            return foldedSquareSolution(problem);
 
             // shifted square
-            return centeredSquareSolution(problem);
+//            return centeredSquareSolution(problem);
+
+            return handcodedSquareFoldsSolution(problem, handCodedProblems);
         }
+    }
+
+    private static Solution handcodedSquareFoldsSolution(Problem problem, List<Solution> handCodedProblems) {
+
+        Fraction area = problem.calcArea();
+
+        Fraction minDiff = null;
+        Solution bestSolution = null;
+        OPolygon bestDstPolygon = null;
+        for (Solution p : handCodedProblems) {
+            OPolygon polygon = new OPolygon(p.destinationPositions);
+            Fraction probArea = polygon.calcArea();
+            Fraction diff = probArea.sub(area);
+            if( minDiff == null || diff.compareTo(minDiff) < 0) {
+                minDiff = diff;
+                bestSolution = p;
+                bestDstPolygon = polygon;
+            }
+        }
+
+        Vertex handCodedCenter = bestDstPolygon.getCenter();
+        Vertex neededCenter = problem.getCenter();
+
+        Vertex T = neededCenter.sub(handCodedCenter);
+        Solution translatedSolution = bestSolution.translate(T);
+
+        return translatedSolution;
     }
 
     private static Solution foldedSquareSolution(Problem problem) {
@@ -129,6 +158,9 @@ public class ImperfectSolver {
         int nDeletedFiles = 0;
         int nPerfectSolutions = 0;
 
+        // loading hand-coded solutions
+        List<Solution> handCodedSolutions = loadHandCodedSolutions();
+
         for (File problemFile : problemFiles) {
             try {
                 File solutionFile = Utils.getSolutionFile(problemFile);
@@ -152,7 +184,7 @@ public class ImperfectSolver {
                     continue;
                 }
 
-                Solution solution = getSolution(problem);
+                Solution solution = getSolution(problem, handCodedSolutions);
                 if( solution.isPerfect )
                     nPerfectSolutions++;
                 solution.save(solutionFile);
@@ -166,6 +198,24 @@ public class ImperfectSolver {
         System.out.println("count of deleted files = " + nDeletedFiles);
         System.out.println("count of perfect solutions = " + nPerfectSolutions);
 
+    }
+
+    private static List<Solution> loadHandCodedSolutions() {
+        List<File> handCodedFiles = new ArrayList<>();
+        handCodedFiles.add(new File("problems/FoldOneSquarSolution.txt"));
+        handCodedFiles.add(new File("problems/TwoFoldsSquareSolution.txt"));
+        handCodedFiles.add(new File("problems/TreeFoldsSquareSolution.txt"));
+
+        List<Solution> handCodedSolution = new ArrayList<>();
+        for (File file : handCodedFiles) {
+            try {
+                handCodedSolution.add(SolutionParser.parse(file));
+            } catch (IOException e) {
+                System.out.println("Failed to load hand coded problem: " + file.getPath());
+                e.printStackTrace();
+            }
+        }
+        return handCodedSolution;
     }
 
 }

@@ -86,6 +86,10 @@ public class Solution {
 
     public Solution translate(long nx, long dx, long ny, long dy) {
         Vertex T = new Vertex(nx, dx, ny, dy);
+        return translate(T);
+    }
+
+    public Solution translate(Vertex T) {
         List<Vertex> newDst = new ArrayList<>();
         for (Vertex vertex : destinationPositions) {
             newDst.add(vertex.translate(T));
@@ -103,4 +107,5 @@ public class Solution {
         }
         return this;
     }
+
 }
