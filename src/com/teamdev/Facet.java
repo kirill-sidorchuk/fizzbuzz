@@ -41,4 +41,12 @@ public class Facet {
         }
         return ys;
     }
+
+    public boolean isFlips(FoldVector f, List<Vertex> vertices) {
+        for (Integer index : vertexIndices) {
+            Vertex V = vertices.get(index);
+            if( f.isFlips(V)) return true;
+        }
+        return false;
+    }
 }

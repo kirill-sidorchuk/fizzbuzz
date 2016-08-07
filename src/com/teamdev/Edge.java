@@ -53,6 +53,10 @@ public class Edge {
         return i0 == i || i1 == i;
     }
 
+    public boolean containsIndex(List<Integer> indices) {
+        return indices.contains(i0) || indices.contains(i1);
+    }
+
     public boolean containsPoint(Vertex X, List<Vertex> vertices) {
         Vertex A = vertices.get(i0);
         Vertex B = vertices.get(i1);
@@ -68,11 +72,11 @@ public class Edge {
         return XA.normSquared().compareTo(BA.normSquared()) <= 0;
     }
 
-    public Vertex getIntersectionWithPlane(Edge e, List<Vertex> vertices) {
+    public Vertex getIntersectionWithLine(FoldVector v, List<Vertex> vertices) {
         Vertex A = vertices.get(i0);
         Vertex B = vertices.get(i1);
-        Vertex C = vertices.get(e.i0);
-        Vertex D = vertices.get(e.i1);
+        Vertex C = v.base;
+        Vertex D = v.base.add(v.direction);
 
         Vertex BA = B.sub(A);
         Vertex DC = D.sub(C);
@@ -92,10 +96,14 @@ public class Edge {
         return A.add(BA.mul(alpha));
     }
 
+    public Vertex getIntersectionWithLine(Edge e, List<Vertex> vertices) {
+        return getIntersectionWithLine(FoldVector.fromVertices(vertices.get(e.i0), vertices.get(e.i1)), vertices);
+    }
+
     public Vertex getIntersection(Edge e, List<Vertex> vertices) {
-        Vertex x = getIntersectionWithPlane(e, vertices);
+        Vertex x = getIntersectionWithLine(e, vertices);
         if( x == null ) return null;
-        Vertex x2 = e.getIntersectionWithPlane(this, vertices);
+        Vertex x2 = e.getIntersectionWithLine(this, vertices);
         if( x2 == null ) return null;
         if( !x.equals(x2) )
             throw new RuntimeException("intersection is not consistent");

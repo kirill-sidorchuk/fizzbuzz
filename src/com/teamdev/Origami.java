@@ -1,5 +1,7 @@
 package com.teamdev;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,92 +12,172 @@ import java.util.Set;
  */
 public class Origami {
 
-    int nContourVertices;
-    List<Vertex> vertices = new ArrayList<>();
-    List<Facet> facets = new ArrayList<>();
-    List<Edge> edges = new ArrayList<>();
+    Origami parent = null;
+    List<Vertex> vertices;
+    List<Facet> facets;
+    List<Edge> edges;
 
-    private static class Path {
-        List<Integer> indexes = new ArrayList<>();
-        Set<Integer> set = new HashSet<>();
-        boolean abandoned = false;
+    public Origami() {
+        vertices = new ArrayList<>();
+        facets = new ArrayList<>();
+        edges = new ArrayList<>();
+    }
 
-        public Path() {
+    public Origami(List<Vertex> vertices, List<Facet> facets, List<Edge> edges) {
+        this.vertices = vertices;
+        this.facets = facets;
+        this.edges = edges;
+    }
+
+    public static Origami getSquare() {
+        Origami origami = new Origami();
+        origami.vertices.add(new Vertex(new Fraction(0), new Fraction(0)));
+        origami.vertices.add(new Vertex(new Fraction(1), new Fraction(0)));
+        origami.vertices.add(new Vertex(new Fraction(1), new Fraction(1)));
+        origami.vertices.add(new Vertex(new Fraction(0), new Fraction(1)));
+
+        ArrayList<Integer> facetList = new ArrayList<>();
+        facetList.add(0);
+        facetList.add(1);
+        facetList.add(2);
+        facetList.add(3);
+        origami.facets.add(new Facet(facetList));
+
+        origami.edges.add(new Edge(0,1));
+        origami.edges.add(new Edge(1,2));
+        origami.edges.add(new Edge(2,3));
+        origami.edges.add(new Edge(3,0));
+
+        for (Edge e : origami.edges) {
+            origami.vertices.get(e.i0).addEdge(e);
+            origami.vertices.get(e.i1).addEdge(e);
         }
 
-        public Path(List<Integer> indexes) {
-            this.indexes = indexes;
-            set = new HashSet<>(indexes);
+        return origami;
+    }
+
+    public Origami copy() {
+        Origami origami = new Origami();
+        origami.vertices.addAll(vertices);
+        origami.facets.addAll(facets);
+        origami.edges.addAll(edges);
+        return origami;
+    }
+
+    public Origami[] fold(FoldVector vector) {
+
+        List<Vertex> intersections = new ArrayList<>();
+        for (Edge edge : edges) {
+            Vertex x = edge.getIntersectionWithLine(vector, vertices);
+            if( x != null )
+                intersections.add(x);
+        }
+        if( intersections.size() > 2 ) throw new RuntimeException("non convex intersection found");
+        if( intersections.size() != 2) throw new RuntimeException("there should be 2 intersections");
+
+        List<Facet> tmpFacets = new ArrayList<>(facets);
+        List<Edge> tmpEdges = new ArrayList<>(edges);
+        Origami tmp = new Origami(vertices, tmpFacets, tmpEdges);
+
+        int oldSize = vertices.size();
+
+        tmp.vertices.addAll(intersections);
+
+        Edge e = new Edge(oldSize, oldSize + 1);
+        for (Vertex v : intersections) {
+            v.addEdge(e);
         }
 
-        public boolean contains(int i) {
-            return set.contains(i);
+        tmp.edges.add(e);
+
+        tmp.facets.clear();
+        tmp.findIntersections();
+        tmp.findFacets();
+
+        // choosing which facets flip
+        List<Facet> noFlipFacets = new ArrayList<>();
+        List<Facet> flipFacets = new ArrayList<>();
+        for (Facet facet : tmp.facets) {
+            if(facet.isFlips(vector, tmp.vertices))
+                flipFacets.add(facet);
+            else
+                noFlipFacets.add(facet);
         }
 
-        public boolean add(int i) {
-            if( !contains(i)) {
-                indexes.add(i);
-                set.add(i);
-                return true;
+        List<Edge> noFlipEdges = tmp.findEdgesForFacets(noFlipFacets);
+        List<Edge> flipEdges = tmp.findEdgesForFacets(flipFacets);
+
+        Origami noFlipOrigami = new Origami(vertices, noFlipFacets, noFlipEdges);
+        Origami flipOrigami = new Origami(vertices, flipFacets, flipEdges);
+
+        noFlipOrigami.parent = this;
+        flipOrigami.parent = this;
+
+        return new Origami[]{noFlipOrigami, flipOrigami};
+    }
+
+    List<Edge> findEdgesForFacets(List<Facet> fs) {
+        List<Edge> fsEdges = new ArrayList<>();
+        for (Edge e : edges) {
+            for (Facet f : fs) {
+                if( f.vertexIndices.contains(e.i0) && f.vertexIndices.contains(e.i1) ) {
+                    fsEdges.add(e);
+                    break;
+                }
             }
-            return false;
         }
+        return fsEdges;
+    }
 
-        public Path copy() {
-            Path p = new Path();
-            p.indexes.addAll(indexes);
-            p.set.addAll(set);
-            return p;
-        }
+    public void findIntersections() {
+        int count = 1;
+        while(count != 0) {
+            count = 0;
+            for (int i = 0; i < edges.size() && count == 0; ++i) {
+                Edge ei = edges.get(i);
+                for (int j = 0; j < edges.size() && count == 0; ++j) {
+                    if( i == j ) continue;
+                    Edge ej = edges.get(j);
+                    if (ei.hasCommonVertex(ej)) continue;
+                    Vertex intersection = ei.getIntersection(ej, vertices);
+                    if (intersection != null) {
+                        int intIndex = vertices.indexOf(intersection);
+                        if (intIndex == -1) {
+                            // adding to list
+                            intIndex = vertices.size();
+                            vertices.add(intersection);
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Path path = (Path) o;
-            return set.equals(path.set);
-        }
-
-        @Override
-        public int hashCode() {
-            return set.hashCode();
+                            splitEdge(ei, intersection, intIndex);
+                            splitEdge(ej, intersection, intIndex);
+                        } else {
+                            intersection = vertices.get(intIndex);
+                            if (ei.containsIndex(intIndex)) {
+                                splitEdge(ej, intersection, intIndex);
+                            } else {
+                                splitEdge(ei, intersection, intIndex);
+                            }
+                        }
+                        count++;
+                    }
+                }
+            }
         }
     }
 
-    public void findFacetsOld() {
-        // searching for facets
-        Set<Path> foundFacets = new HashSet<>();
-        for( int iStart=0; iStart<vertices.size(); ++iStart) {
-            if( vertices.get(iStart).edges == null || vertices.get(iStart).edges.size() == 0 )
-                continue;
-            Path mainPath = new Path();
-            Set<Path> addedPaths = new HashSet<>();
-            traverseOld(iStart, -1, mainPath, vertices, addedPaths);
-            if (!mainPath.abandoned) addedPaths.add(mainPath);
-
-            // selecting tightest facet
-            int minCount = Integer.MAX_VALUE;
-            Path bestPath = null;
-            for (Path path : addedPaths) {
-                if( path.abandoned) continue;
-                if( path.set.size() < minCount) {
-                    minCount = path.set.size();
-                    bestPath = path;
-                }
-            }
-
-            if( bestPath == null) throw new RuntimeException("could not find path for start point " + iStart);
-            foundFacets.add(bestPath);
-        }
-        System.out.printf("" + foundFacets.size());
-
-        // converting
-        for (Path p : foundFacets) {
-            Facet facet = new Facet(p.indexes);
-            facets.add(facet);
-        }
-
+    private void splitEdge(Edge ej, Vertex intersection, int intIndex) {
+        Vertex Bj0 = vertices.get(ej.i0);
+        Vertex Bj1 = vertices.get(ej.i1);
+        Bj0.edges.remove(ej);
+        Bj1.edges.remove(ej);
+        Edge ej0 = new Edge(ej.i0, intIndex, false);
+        Edge ej1 = new Edge(intIndex, ej.i1, false);
+        intersection.addEdge(ej0);
+        intersection.addEdge(ej1);
+        Bj0.edges.add(ej0);
+        Bj1.edges.add(ej1);
+        edges.remove(ej);
+        edges.add(ej0);
+        edges.add(ej1);
     }
 
     public void findFacets() {
@@ -167,37 +249,6 @@ public class Origami {
         for (Path p : paths) {
             Facet facet = new Facet(p.indexes);
             facets.add(facet);
-        }
-    }
-
-    private void traverseOld(int iStart, int iFromWhere, Path path, List<Vertex> vertices, Set<Path> foundFacets) {
-
-        // adding self to set
-        if( path.contains(iStart) ) return;
-        path.add(iStart);
-
-        // selecting possible next edges
-        List<Edge> nextEdges = new ArrayList<>();
-        List<Edge> startEdges = vertices.get(iStart).edges;
-        Edge originEdge = new Edge(iStart, iFromWhere, false);
-        for (Edge edge : startEdges) {
-            if( edge.equals(originEdge) ) continue;
-            nextEdges.add(edge);
-        }
-
-        if( nextEdges.size() == 1) {
-            Edge nextEdge = nextEdges.get(0);
-            int nextI = nextEdge.i0 == iStart ? nextEdge.i1 : nextEdge.i0;
-            traverseOld(nextI, iStart, path, vertices, foundFacets);
-        }
-        else {
-            path.abandoned = true;
-            for (Edge nextEdge : nextEdges) {
-                Path pathCopy = path.copy();
-                int nextI = nextEdge.i0 == iStart ? nextEdge.i1 : nextEdge.i0;
-                traverseOld(nextI, iStart, pathCopy, vertices, foundFacets);
-                foundFacets.add(pathCopy);
-            }
         }
     }
 

@@ -38,6 +38,35 @@ public class ImperfectSolver {
         }
         else {
 
+            Origami origami = Origami.getSquare();
+
+            Vertex xBase = new Vertex(new Fraction(1,2), new Fraction(0));
+            Vertex yBase = new Vertex(new Fraction(0), new Fraction(1,2));
+            Vertex xDir = new Vertex(new Fraction(0), new Fraction(1));
+            Vertex yDir = new Vertex(new Fraction(-1), new Fraction(0));
+
+            for( int f=0; f<nFolds; ++f) {
+
+                Vertex base = null;
+                Vertex dir = null;
+                if( 0 == (f % 2)) {
+                    base = xBase;
+                    dir = xDir;
+                }
+                else {
+                    base = yBase;
+                    dir = yDir;
+                }
+
+                FoldVector foldVector = new FoldVector(base, dir);
+
+                Origami[] origamis = origami.fold(foldVector);
+
+                base.x.d *= 2;
+                base.y.d *= 2;
+                base.normalize();
+            }
+
             System.out.println(nFolds);
         }
 

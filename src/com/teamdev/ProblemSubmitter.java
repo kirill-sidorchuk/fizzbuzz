@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class ProblemSubmitter {
 
-    public static final int REQUEST_SLEEP_MS = 1200;
+    public static final int REQUEST_SLEEP_MS = 1500;
 
     public static void main(String[] args) throws IOException {
         File srcDir = new File(args[0]);

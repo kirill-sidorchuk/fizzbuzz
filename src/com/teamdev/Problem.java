@@ -98,22 +98,10 @@ public class Problem {
 
         // adding external vertices (from silhouette)
         origami.vertices.addAll(polygon.vertices);
-        origami.nContourVertices = polygon.vertices.size();
 
         for (Vertex v : origami.vertices) {
             v.external = true;
         }
-
-        // adding external edges
-//        for( int i=0; i<polygon.vertices.size(); ++i) {
-//            int i1 = (i + 1) % polygon.vertices.size();
-//            Edge e = new Edge(i, i1, true);
-//
-//            // adding links
-//            origami.vertices.get(i).addEdge(e);
-//            origami.vertices.get(i1).addEdge(e);
-//            origami.edges.add(e);
-//        }
 
         // adding hidden vertices and internal edges
         for (LineSegment seg : lineSegments) {
@@ -139,65 +127,9 @@ public class Problem {
             }
         }
 
-
-        // checking for intersections
-        int totalCount = 0;
-        int count = 1;
-        while(count != 0) {
-            count = 0;
-            for (int i = 0; i < origami.edges.size() && count == 0; ++i) {
-                Edge ei = origami.edges.get(i);
-                for (int j = 0; j < origami.edges.size() && count == 0; ++j) {
-                    if( i == j ) continue;
-                    Edge ej = origami.edges.get(j);
-                    if (ei.hasCommonVertex(ej)) continue;
-//                    if( ei.equals(new Edge(3,2)) && ej.equals(new Edge(5,8))) {
-//                        System.out.println("yo");
-//                    }
-                    Vertex intersection = ei.getIntersection(ej, origami.vertices);
-                    if (intersection != null) {
-                        int intIndex = origami.vertices.indexOf(intersection);
-                        if (intIndex == -1) {
-                            // adding to list
-                            intIndex = origami.vertices.size();
-                            origami.vertices.add(intersection);
-
-                            splitEdge(origami, ei, intersection, intIndex);
-                            splitEdge(origami, ej, intersection, intIndex);
-                        } else {
-                            intersection = origami.vertices.get(intIndex);
-                            if (ei.containsIndex(intIndex)) {
-                                splitEdge(origami, ej, intersection, intIndex);
-                            } else {
-                                splitEdge(origami, ei, intersection, intIndex);
-                            }
-                        }
-                        count++;
-                        totalCount++;
-                    }
-                }
-            }
-        }
-
-        System.out.println("Count of intersections = " + totalCount);
+        origami.findIntersections();
 
         return origami;
-    }
-
-    private static void splitEdge(Origami origami, Edge ej, Vertex intersection, int intIndex) {
-        Vertex Bj0 = origami.vertices.get(ej.i0);
-        Vertex Bj1 = origami.vertices.get(ej.i1);
-        Bj0.edges.remove(ej);
-        Bj1.edges.remove(ej);
-        Edge ej0 = new Edge(ej.i0, intIndex, false);
-        Edge ej1 = new Edge(intIndex, ej.i1, false);
-        intersection.addEdge(ej0);
-        intersection.addEdge(ej1);
-        Bj0.edges.add(ej0);
-        Bj1.edges.add(ej1);
-        origami.edges.remove(ej);
-        origami.edges.add(ej0);
-        origami.edges.add(ej1);
     }
 
     public Fraction calcArea() {
