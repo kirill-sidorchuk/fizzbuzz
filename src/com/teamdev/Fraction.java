@@ -29,10 +29,35 @@ public class Fraction implements Comparable<Fraction> {
         primes.add(BigInteger.valueOf(59));
         primes.add(BigInteger.valueOf(61));
         primes.add(BigInteger.valueOf(67));
+        primes.add(BigInteger.valueOf(71));
+        primes.add(BigInteger.valueOf(73));
+        primes.add(BigInteger.valueOf(79));
+        primes.add(BigInteger.valueOf(83));
+        primes.add(BigInteger.valueOf(97));
+        primes.add(BigInteger.valueOf(101));
+        primes.add(BigInteger.valueOf(103));
+        primes.add(BigInteger.valueOf(107));
+        primes.add(BigInteger.valueOf(109));
+        primes.add(BigInteger.valueOf(113));
+        primes.add(BigInteger.valueOf(127));
+        primes.add(BigInteger.valueOf(131));
+        primes.add(BigInteger.valueOf(137));
+        primes.add(BigInteger.valueOf(139));
+        primes.add(BigInteger.valueOf(149));
+        primes.add(BigInteger.valueOf(151));
+        primes.add(BigInteger.valueOf(157));
+        primes.add(BigInteger.valueOf(163));
+        primes.add(BigInteger.valueOf(167));
+        primes.add(BigInteger.valueOf(173));
+        primes.add(BigInteger.valueOf(179));
+        primes.add(BigInteger.valueOf(181));
+        primes.add(BigInteger.valueOf(191));
+        primes.add(BigInteger.valueOf(193));
+        primes.add(BigInteger.valueOf(199));
     }
 
     public BigInteger n;
-    public BigInteger d;
+    public BigInteger d; // must be positive
 
     public Fraction(BigInteger n, BigInteger d) {
         this.n = n;
@@ -183,6 +208,10 @@ public class Fraction implements Comparable<Fraction> {
 
     public Fraction div(long v) {
         return new Fraction(n, d.multiply(BigInteger.valueOf(v)));
+    }
+
+    public Fraction abs() {
+        return new Fraction(n.abs(), d);
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class SolutionParser {
 
-    public Solution parse(File name) throws IOException {
+    public static Solution parse(File name) throws IOException {
         List<String> lines = Utils.readLines(name);
 
         // reading vertices
