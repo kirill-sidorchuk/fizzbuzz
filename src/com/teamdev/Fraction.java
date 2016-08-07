@@ -12,6 +12,16 @@ public class Fraction implements Comparable<Fraction> {
         this.d = d;
     }
 
+    public Fraction(long n) {
+        this.n = n;
+        this.d = 1;
+    }
+
+    public Fraction() {
+        this.n = 0;
+        this.d = 1;
+    }
+
     public float getFloatValue() {
         return (float) ((double) n / (double) d);
     }
