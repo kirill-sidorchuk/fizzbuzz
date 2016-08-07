@@ -145,11 +145,15 @@ public class Problem {
         int count = 1;
         while(count != 0) {
             count = 0;
-            for (int i = 0; i < origami.edges.size() - 1 && count == 0; ++i) {
+            for (int i = 0; i < origami.edges.size() && count == 0; ++i) {
                 Edge ei = origami.edges.get(i);
-                for (int j = i + 1; j < origami.edges.size() && count == 0; ++j) {
+                for (int j = 0; j < origami.edges.size() && count == 0; ++j) {
+                    if( i == j ) continue;
                     Edge ej = origami.edges.get(j);
                     if (ei.hasCommonVertex(ej)) continue;
+//                    if( ei.equals(new Edge(3,2)) && ej.equals(new Edge(5,8))) {
+//                        System.out.println("yo");
+//                    }
                     Vertex intersection = ei.getIntersection(ej, origami.vertices);
                     if (intersection != null) {
                         int intIndex = origami.vertices.indexOf(intersection);

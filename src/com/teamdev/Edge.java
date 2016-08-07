@@ -17,6 +17,12 @@ public class Edge {
         this.external = external;
     }
 
+    public Edge(int i0, int i1) {
+        this.i0 = i0;
+        this.i1 = i1;
+        this.external = false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,7 +87,7 @@ public class Edge {
         Fraction alpha = CA.vect_prod_z(DC).div(den);
         if( alpha.n < 0 ) return null;
 
-        if( alpha.n >= alpha.d ) return null;
+        if( alpha.n > alpha.d ) return null;
 
         return A.add(BA.mul(alpha));
     }
