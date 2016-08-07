@@ -36,6 +36,14 @@ public class PaperVisualizer {
 
         gr.setColor(Color.pink);
         gr.fillPolygon(xPoints, yPoints, pointsCount);
+
+        for (Vertex v : vertices) {
+
+            gr.setColor(Color.black);
+            gr.drawString(v.toString(), transformXCoordinate(v.getFloatX()), transformYCoordinate(v.getFloatY()));
+        }
+
+
     }
 
     private void drawPaper(BufferedImage image, Paper paper, FoldLine foldLine) {
