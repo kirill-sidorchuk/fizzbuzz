@@ -23,18 +23,33 @@ import java.util.List;
 * */
 public class PolygonHelper {
     public static int counter = 0;
+    private List<BufferedImage> finalImages = new ArrayList<>();
 
-    public List<BufferedImage> createBufferedImageFromVertices(List<OPolygon> polygons, String problem_spec_name) {
+    public int[] createBufferedImageFromVertices(List<OPolygon> polygons, String problem_spec_name) {
         int sizeCounter = 1;
         ImageData maxPoint = getMaxAndMinPoint(polygons);
         if (maxPoint.getMaxX() < 500) sizeCounter = 3;
         BufferedImage bufferedImageFinal = new BufferedImage((int) (maxPoint.getMaxX() - maxPoint.getMinX()) * sizeCounter, (int) (maxPoint.getMaxY() - maxPoint.getMinY()) * sizeCounter, BufferedImage.TYPE_3BYTE_BGR);
         List<BufferedImage> finalImages = new ArrayList<>();
-        finalImages.add(bufferedImageFinal);
+        File file = new File("poly/" + problem_spec_name + ".png");
+
+
         for (OPolygon polygon : polygons) {
             finalImages.add(drawPolygon(polygon, maxPoint, bufferedImageFinal, problem_spec_name));
         }
-        return finalImages;
+        finalImages.add(0,bufferedImageFinal);
+        int[] areas = new int[finalImages.size()];
+        for (int i = 0; i < finalImages.size(); i++) {
+            areas[i] = getPolygonPixelArea(finalImages.get(i));
+        }
+
+        try {
+            ImageIO.write(bufferedImageFinal, "png", file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        counter++;
+        return areas;
     }
 
     public void findAndPolygon(List<OPolygon> polygons, String problem_spec_name) {
@@ -167,7 +182,7 @@ public class PolygonHelper {
         int area = 0;
         byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
         for (int i = 0; i < data.length; i += 3) {
-            if(data[i] != 0 ||  data[i] != 0 || data[i] != 0) area ++;
+            if (data[i] != 0 || data[i+1] != 0 || data[i+2] != 0) area++;
         }
         return area;
     }

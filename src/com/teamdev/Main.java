@@ -1,6 +1,7 @@
 package com.teamdev;
 
 import com.teamdev.triangulation.PolygonHelper;
+import com.teamdev.triangulation.Resembles;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,13 +17,15 @@ public class Main {
         }
         String problemID = args[0];
         Problem problem = ProblemReader.read(new File(PROBLEMS_PATH, problemID + ".txt"));
-        ProblemVisualizer.visualizeProblem(problem, PROBLEMS_PATH + File.separator + problemID + ".png");
+       /* ProblemVisualizer.visualizeProblem(problem, PROBLEMS_PATH + File.separator + problemID + ".png");
 
         Origami origami = problem.getOrigami();
-        origami.findFacets();
+        origami.findFacets();*/
 
         PolygonHelper polygonHelper = new PolygonHelper();
-        polygonHelper.createBufferedImageFromVertices(problem.polygons, problemID);
+        Resembles resembles = new Resembles();
+        resembles.getResembles(problem.polygons);
+       // polygonHelper.createBufferedImageFromVertices(problem.polygons, problemID);
 
         //    System.out.println(problem.toString());
 
