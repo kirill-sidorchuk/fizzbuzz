@@ -90,7 +90,7 @@ public class ProblemSubmitter {
                 boolean isPerfectlySolved = Utils.isPerfetlySolved(solutionFile);
                 boolean isSolved = Utils.isSolved(solutionFile);
 
-                if( isPerfectlySolved && isSolved ) continue;
+                if( isPerfectlySolved || isSolved ) continue;
 
                 System.out.println("\nSubmitting: " + solutionFile.getName());
 
