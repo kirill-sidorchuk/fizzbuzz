@@ -200,4 +200,11 @@ public class Problem {
         origami.edges.add(ej1);
     }
 
+    public Fraction calcArea() {
+        Fraction area = new Fraction(0);
+        for (OPolygon polygon : polygons) {
+            area = area.add(polygon.calcArea());
+        }
+        return area;
+    }
 }

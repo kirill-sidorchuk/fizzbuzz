@@ -14,14 +14,34 @@ public class ImperfectSolver {
         // blind square solver
         // return blindSquareSolution();
 
-        if( problem.polygons.size() == 1 && problem.polygons.get(0).calcArea().equals(new Fraction(1,1))) {
+        if( problem.calcArea().equals(new Fraction(1,1))) {
             // solving perfectly any shifted and rotated square
             return shiftedSqaureSolution(problem);
         }
         else {
+
+            // folding square to get similar area
+            return foldedSquareSolution(problem);
+
             // shifted square
+            //return centeredSquareSolution(problem);
+        }
+    }
+
+    private static Solution foldedSquareSolution(Problem problem) {
+        Fraction area = problem.calcArea();
+
+        int nFolds = (int) Math.round(Math.log(new Fraction(1).div(area).getDoubleValue())/Math.log(2));
+
+        if( nFolds < 1 ) {
             return centeredSquareSolution(problem);
         }
+        else {
+
+            System.out.println(nFolds);
+        }
+
+        return null;
     }
 
     private static Solution shiftedSqaureSolution(Problem problem) {
@@ -85,7 +105,7 @@ public class ImperfectSolver {
                 Solution solution = getSolution(problem);
                 solution.save(solutionFile);
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.out.println("Failed to process: " + problemFile.getPath());
                 e.printStackTrace();
             }
