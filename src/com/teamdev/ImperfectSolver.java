@@ -1,6 +1,9 @@
 package com.teamdev;
 
+import com.teamdev.triangulation.Resembles;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -11,7 +14,9 @@ import java.util.List;
  */
 public class ImperfectSolver {
 
-    public static Solution getSolution(Problem problem, List<Solution> handCodedProblems) {
+    public static final String PROBLEMS_PERFECT_LIST = "problems/perfect.list";
+
+    public static Solution getSolution(Problem problem, List<HandSolution> handCodedProblems) {
         // blind square solver
         // return blindSquareSolution();
 
@@ -29,35 +34,64 @@ public class ImperfectSolver {
             // shifted square
 //            return centeredSquareSolution(problem);
 
+            // resebmles-based best search
+            //return handcodedSquareFoldsSolutionWithResembles(problem, handCodedProblems);
+
             return handcodedSquareFoldsSolution(problem, handCodedProblems);
         }
     }
 
-    private static Solution handcodedSquareFoldsSolution(Problem problem, List<Solution> handCodedProblems) {
-
-        Fraction area = problem.calcArea();
+    private static Solution handcodedSquareFoldsSolution(Problem problem, List<HandSolution> handCodedProblems) {
 
         Fraction minDiff = null;
-        Solution bestSolution = null;
-        OPolygon bestDstPolygon = null;
-        for (Solution p : handCodedProblems) {
-            OPolygon polygon = new OPolygon(p.destinationPositions);
-            Fraction probArea = polygon.calcArea();
-            Fraction diff = probArea.sub(area);
-            if( minDiff == null || diff.compareTo(minDiff) < 0) {
+        HandSolution bestSolution = null;
+
+        Fraction probArea = problem.calcArea();
+
+        for (HandSolution handSolution : handCodedProblems) {
+
+            Fraction handArea = handSolution.polygon.calcArea();
+            Fraction diff = handArea.sub(probArea).abs();
+            if( minDiff == null || diff.compareTo(minDiff) < 0 ) {
                 minDiff = diff;
-                bestSolution = p;
-                bestDstPolygon = polygon;
+                bestSolution = handSolution;
             }
         }
 
-        Vertex handCodedCenter = bestDstPolygon.getCenter();
         Vertex neededCenter = problem.getCenter();
+        Vertex T = neededCenter.sub(bestSolution.polygon.getCenter());
+        Solution translated = bestSolution.solution.translate(T);
 
-        Vertex T = neededCenter.sub(handCodedCenter);
-        Solution translatedSolution = bestSolution.translate(T);
+        return translated;
+    }
 
-        return translatedSolution;
+    private static Solution handcodedSquareFoldsSolutionWithResembles(Problem problem, List<HandSolution> handCodedProblems) {
+
+        double maxResembles = 0;
+        Solution bestSolution = null;
+
+        for (HandSolution handSolution : handCodedProblems) {
+
+            // best translation
+            Vertex neededCenter = problem.getCenter();
+            OPolygon translatedPoly = handSolution.polygon.moveToCenterCopy(neededCenter);
+
+            List<OPolygon> polys = new ArrayList<>();
+            polys.add(translatedPoly);
+            polys.add(problem.polygons.get(0));
+
+            double resembles = Resembles.getResembles(polys);
+
+            if( bestSolution == null || resembles > maxResembles) {
+                maxResembles = resembles;
+                Vertex T = neededCenter.sub(handSolution.polygon.getCenter());
+                bestSolution = handSolution.solution.translate(T);
+            }
+        }
+
+        System.out.println("max resembles = " + maxResembles);
+
+        return bestSolution;
     }
 
     private static Solution foldedSquareSolution(Problem problem) {
@@ -157,9 +191,12 @@ public class ImperfectSolver {
 
         int nDeletedFiles = 0;
         int nPerfectSolutions = 0;
+        int nNewSolutions = 0;
+
+        StringBuilder perfectSB = new StringBuilder();
 
         // loading hand-coded solutions
-        List<Solution> handCodedSolutions = loadHandCodedSolutions();
+        List<HandSolution> handCodedSolutions = loadHandCodedSolutions();
 
         for (File problemFile : problemFiles) {
             try {
@@ -184,10 +221,17 @@ public class ImperfectSolver {
                     continue;
                 }
 
+                if( problemFile.getName().equals("1094.txt")) {
+                    System.out.println("s");
+                }
+
                 Solution solution = getSolution(problem, handCodedSolutions);
-                if( solution.isPerfect )
+                if( solution.isPerfect ) {
                     nPerfectSolutions++;
+                    perfectSB.append(problemFile.getName()).append("\n");
+                }
                 solution.save(solutionFile);
+                nNewSolutions ++;
 
             } catch (Exception e) {
                 System.out.println("Failed to process: " + problemFile.getPath());
@@ -197,25 +241,55 @@ public class ImperfectSolver {
 
         System.out.println("count of deleted files = " + nDeletedFiles);
         System.out.println("count of perfect solutions = " + nPerfectSolutions);
+        System.out.println("count of new solutions = " + nNewSolutions);
+
+        try {
+            Utils.writeStringToFile(new File(PROBLEMS_PERFECT_LIST), perfectSB.toString());
+        } catch (FileNotFoundException e) {
+            System.out.println("failed to save list of perfect solutions");
+            e.printStackTrace();
+        }
 
     }
 
-    private static List<Solution> loadHandCodedSolutions() {
-        List<File> handCodedFiles = new ArrayList<>();
-        handCodedFiles.add(new File("problems/FoldOneSquarSolution.txt"));
-        handCodedFiles.add(new File("problems/TwoFoldsSquareSolution.txt"));
-        handCodedFiles.add(new File("problems/TreeFoldsSquareSolution.txt"));
+    private static class HandSolution {
+        public Solution solution;
+        public OPolygon polygon;
 
-        List<Solution> handCodedSolution = new ArrayList<>();
-        for (File file : handCodedFiles) {
-            try {
-                handCodedSolution.add(SolutionParser.parse(file));
-            } catch (IOException e) {
-                System.out.println("Failed to load hand coded problem: " + file.getPath());
-                e.printStackTrace();
-            }
+        public HandSolution(Solution solution, OPolygon polygon) {
+            this.solution = solution;
+            this.polygon = polygon;
         }
-        return handCodedSolution;
+    }
+
+    private static List<HandSolution> loadHandCodedSolutions() {
+        List<HandSolution> handCodedSolutions = new ArrayList<>();
+        try {
+            List<Vertex> v1 = new ArrayList<>();
+            v1.add(new Vertex(new Fraction(0), new Fraction(0)));
+            v1.add(new Vertex(new Fraction(1,2), new Fraction(0)));
+            v1.add(new Vertex(new Fraction(1,2), new Fraction(1)));
+            v1.add(new Vertex(new Fraction(0), new Fraction(1)));
+            handCodedSolutions.add(new HandSolution(SolutionParser.parse(new File("problems/FoldOneSquarSolution.txt")), new OPolygon(v1)));
+
+            List<Vertex> v2 = new ArrayList<>();
+            v2.add(new Vertex(new Fraction(0), new Fraction(0)));
+            v2.add(new Vertex(new Fraction(1,2), new Fraction(0)));
+            v2.add(new Vertex(new Fraction(1,2), new Fraction(1,2)));
+            v2.add(new Vertex(new Fraction(0), new Fraction(1,2)));
+            handCodedSolutions.add(new HandSolution(SolutionParser.parse(new File("problems/TwoFoldsSquareSolution.txt")), new OPolygon(v2)));
+
+            List<Vertex> v3 = new ArrayList<>();
+            v3.add(new Vertex(new Fraction(0), new Fraction(0)));
+            v3.add(new Vertex(new Fraction(1,2), new Fraction(0)));
+            v3.add(new Vertex(new Fraction(1,2), new Fraction(1,4)));
+            v3.add(new Vertex(new Fraction(0), new Fraction(1,4)));
+            handCodedSolutions.add(new HandSolution(SolutionParser.parse(new File("problems/TreeFoldsSquareSolution.txt")), new OPolygon(v3)));
+        } catch (IOException e) {
+            System.out.println("Failed to load hand coded problems");
+            e.printStackTrace();
+        }
+        return handCodedSolutions;
     }
 
 }

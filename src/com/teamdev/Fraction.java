@@ -92,7 +92,7 @@ public class Fraction implements Comparable<Fraction> {
 
         Fraction fraction = (Fraction) o;
 
-        return n != null ? n.equals(fraction.n) : fraction.n == null && (d != null ? d.equals(fraction.d) : fraction.d == null);
+        return n.equals(fraction.n) && d.equals(fraction.d);
     }
 
     @Override

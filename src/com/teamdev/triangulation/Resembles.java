@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Resembles {
 
-    public double getResembles(List<OPolygon> oPolygons) {
+    public static double getResembles(List<OPolygon> oPolygons) {
 
         PolygonHelper polygonHelper = new PolygonHelper();
         List<BufferedImage> bufferedImages = polygonHelper.createBufferedImageFromVertices(oPolygons, "myProblem");

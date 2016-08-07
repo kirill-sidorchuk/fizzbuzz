@@ -1,10 +1,7 @@
 package com.teamdev;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kirill.sidorchuk on 8/7/2016.
@@ -67,13 +64,33 @@ public class ProblemSubmitter {
     private static void submitSolutions(File srcDir) {
         File[] solutionFiles = listSolutions(srcDir);
 
+        // loading perfect list
+        final Set<String> perfectNamesSet = new HashSet<>();
+        try {
+            List<String> perfectNames = Utils.readLines(new File(ImperfectSolver.PROBLEMS_PERFECT_LIST));
+            perfectNamesSet.addAll(perfectNames);
+        } catch (IOException e) {
+            System.out.println("failed to read perfect list");
+            e.printStackTrace();
+        }
+
+        // sorting solution files
+        Arrays.sort(solutionFiles, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                int o1p = perfectNamesSet.contains(o1.getName().replace("_solution","")) ? 1 : 0;
+                int o2p = perfectNamesSet.contains(o2.getName().replace("_solution","")) ? 1 : 0;
+                return o2p - o1p;
+            }
+        });
+
         for (File solutionFile : solutionFiles) {
             try {
 
-                boolean isPerfetlySolved = Utils.isPerfetlySolved(solutionFile);
+                boolean isPerfectlySolved = Utils.isPerfetlySolved(solutionFile);
                 boolean isSolved = Utils.isSolved(solutionFile);
 
-                if( isPerfetlySolved && isSolved ) continue;
+                if( isPerfectlySolved && isSolved ) continue;
 
                 System.out.println("\nSubmitting: " + solutionFile.getName());
 

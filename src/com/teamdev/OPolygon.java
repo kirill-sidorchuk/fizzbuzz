@@ -107,4 +107,12 @@ public class OPolygon {
         this.vertices = this.vertices.stream().map(vertex -> vertex.add(shiftVertex)).collect(Collectors.toList());
         this.center = newCenter;
     }
+
+    public OPolygon moveToCenterCopy(Vertex newCenter) {
+        List<Vertex> v = new ArrayList<>();
+        v.addAll(vertices);
+        OPolygon p = new OPolygon(v);
+        p.moveToCenter(newCenter);
+        return p;
+    }
 }
