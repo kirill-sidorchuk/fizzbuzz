@@ -6,6 +6,7 @@ import com.teamdev.Vertex;
 import com.teamdev.fold.FoldLine;
 import com.teamdev.fold.PaperFolderHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class LineHelper {
         Fraction maxY = new Fraction(0, 0);
         Fraction minX = new Fraction(0, 0);
         Fraction minY = new Fraction(0, 0);
-        if (x.d == 0 || y.d == 0) return null;
+        if (x.d.equals(new BigDecimal(0))|| y.d.equals(new BigDecimal(0))) return null;
         maxX = xo.getDoubleValue() > xb.getDoubleValue() ? xo : xb;
         minX = xo.getDoubleValue() < xb.getDoubleValue() ? xo : xb;
         maxY = yo.getDoubleValue() > yb.getDoubleValue() ? yo : yb;

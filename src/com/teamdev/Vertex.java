@@ -109,11 +109,12 @@ public class Vertex {
     }
 
     public Vertex rotate(double[] R) {
-        final double ACC = 1024;
+        return new Vertex();
+        /*final double ACC = 1024;
         long rx = Math.round(ACC * (R[0] * x.n * y.d + R[1] * y.n * x.d));
         long ry = Math.round(ACC * (R[2] * x.n * y.d + R[3] * y.n * x.d));
         long den = Math.round(x.d * y.d * ACC);
-        return new Vertex( rx, den, ry, den).normalize();
+        return new Vertex( rx, den, ry, den).normalize();*/
     }
 
     public Vertex sub(Vertex vertex) {
@@ -195,23 +196,15 @@ public class Vertex {
         return x.equals(vertex.x) && y.equals(vertex.y);
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (x.n ^ (x.n >>> 32));
-        result = 31 * result + (int) (x.d ^ (x.d >>> 32));
-        result = 31 * result + (int) (y.n ^ (y.n >>> 32));
-        result = 31 * result + (int) (y.d ^ (y.d >>> 32));
-        return result;
-    }
 
     @Override
     public String toString() {
         String vdx_str = "";
-        if (x.d != 1) {
+        if (!x.d.equals(new BigDecimal(1))) {
             vdx_str = "/" + x.d;
         }
         String vdy_str = "";
-        if (y.d != 1) {
+        if (!y.d.equals(new BigDecimal(1))) {
             vdy_str = "/" + y.d;
         }
         return x.n + vdx_str + "," + y.n + vdy_str;

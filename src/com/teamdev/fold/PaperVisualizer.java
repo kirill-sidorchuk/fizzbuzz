@@ -34,8 +34,8 @@ public class PaperVisualizer {
         gr.setStroke(new BasicStroke(6));
         gr.drawPolygon(xPoints, yPoints, pointsCount);
 
-        gr.setColor(Color.pink);
-        gr.fillPolygon(xPoints, yPoints, pointsCount);
+        //gr.setColor(Color.pink);
+        //gr.fillPolygon(xPoints, yPoints, pointsCount);
 
         for (Vertex v : vertices) {
 

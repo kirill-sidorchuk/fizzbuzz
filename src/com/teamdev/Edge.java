@@ -1,5 +1,6 @@
 package com.teamdev;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +55,10 @@ public class Edge {
         Vertex BA = B.sub(A);
         Vertex XA = X.sub(A);
 
-        if( XA.vect_prod_z(BA).n != 0 ) return false;
+        if( !XA.vect_prod_z(BA).n.equals(0)) return false;
 
         Fraction s = XA.scalarMul(BA);
-        if( s.n < 0 ) return false;
+        if( s.n.compareTo(new BigDecimal(0)) < 0 ) return false;
 
         return XA.normSquared().compareTo(BA.normSquared()) <= 0;
     }
@@ -72,16 +73,16 @@ public class Edge {
         Vertex DC = D.sub(C);
 
         Fraction den = BA.vect_prod_z(DC);
-        if( den.n == 0 ) {
+        if( den.n.equals(new BigDecimal(0))) {
             // coplanar lines
             return null;
         }
 
         Vertex CA = C.sub(A);
         Fraction alpha = CA.vect_prod_z(DC).div(den);
-        if( alpha.n < 0 ) return null;
+        if( alpha.n.compareTo(new BigDecimal(0)) < 0 ) return null;
 
-        if( alpha.n >= alpha.d ) return null;
+        if( alpha.n.compareTo(alpha.d) >= 0 ) return null;
 
         return A.add(BA.mul(alpha));
     }

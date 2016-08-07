@@ -39,8 +39,9 @@ public class PaperFolderTest {
         final Paper folded = paperFolder.fold(paper, foldLine);
         paperVisualizer.draw(folded, new File(FOLDER + "3.png"));
 
-        //final FoldLine foldLine2 = new FoldLine(new Vertex(1, 1, 1, 3), new Vertex(0, 1, 2, 3));
+        //final FoldLine foldLine2 = new FoldLine(new Vertex(3, 32, 21, 32), new Vertex(30, 32, 1, 32));
         final FoldLine foldLine2 = new FoldLine(new Fraction(-4,5), new Fraction(3,10));
+
         paperVisualizer.draw(folded, foldLine2, new File(FOLDER + "4.png"));
 
         final Paper folded2 = paperFolder.fold(folded, foldLine2);
