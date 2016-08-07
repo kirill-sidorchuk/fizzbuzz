@@ -1,9 +1,6 @@
 package com.teamdev;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +19,12 @@ public class Utils {
             }
         }
         return lines;
+    }
+
+    public static void writeStringToFile(File file, String s) throws FileNotFoundException {
+        try( PrintWriter out = new PrintWriter(file) ){
+            out.println( s );
+        }
     }
 
     static double getAngle(double sine, double cosine) {

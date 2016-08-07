@@ -1,5 +1,8 @@
 package com.teamdev;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +18,22 @@ public class Solution {
         this.sourcePositions = sourcePositions;
         this.facets = facets;
         this.destinationPositions = destinationPositions;
+    }
+
+    public static Solution getBlindSquare() {
+        List<Vertex> v = new ArrayList<>();
+        v.add(new Vertex(new Fraction(0), new Fraction(0)));
+        v.add(new Vertex(new Fraction(1), new Fraction(0)));
+        v.add(new Vertex(new Fraction(1), new Fraction(1)));
+        v.add(new Vertex(new Fraction(0), new Fraction(1)));
+        List<Facet> facets = new ArrayList<>();
+        List<Integer> fIndexes = new ArrayList<>();
+        fIndexes.add(0);
+        fIndexes.add(1);
+        fIndexes.add(2);
+        fIndexes.add(3);
+        facets.add(new Facet(fIndexes));
+        return new Solution(v, facets, v);
     }
 
     public String toStringFormat() {
@@ -33,6 +52,11 @@ public class Solution {
             result += vertex + "\n";
         }
         return result;
+    }
+
+    public void save(File name) throws FileNotFoundException {
+        String s = toStringFormat();
+        Utils.writeStringToFile(name, s);
     }
 
     public Solution rotate(double angle) {
