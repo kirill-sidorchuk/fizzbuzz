@@ -6,6 +6,7 @@ import com.teamdev.Vertex;
 import com.teamdev.fold.FoldLine;
 import com.teamdev.fold.PaperFolderHelper;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,7 +106,7 @@ public class LineHelper {
         Fraction maxY;
         Fraction minX;
         Fraction minY;
-        if (x.d == 0 || y.d == 0) return null;
+        if (x.d.equals(BigInteger.ZERO) || y.d.equals(BigInteger.ZERO)) return null;
 
         if (!isPolygonLine) {
             maxX = xo.getDoubleValue() > xb.getDoubleValue() ? xo : xb;

@@ -19,10 +19,8 @@ public class SolutionParser {
         int pos = 1;
         for( int v=0; v<nVertices; ++v, ++pos) {
             Vertex vx = new Vertex(lines.get(pos));
-            vx.makeValidFromSimpleFraction();
             vertices.add(vx);
         }
-//        Converter.calculateVertexShifts(vertices);
 
         // reading facets
         List<Facet> facets = new ArrayList<>();
@@ -48,7 +46,6 @@ public class SolutionParser {
         List<Vertex> finalVerts = new ArrayList<>();
         for (int v = 0; v < nVertices; ++v, ++pos) {
             Vertex vx = new Vertex(lines.get(pos));
-            vx.makeValidFromSimpleFraction();
             finalVerts.add(vx);
         }
 

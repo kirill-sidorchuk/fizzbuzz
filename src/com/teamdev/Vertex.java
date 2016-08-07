@@ -3,6 +3,7 @@ package com.teamdev;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -19,36 +20,15 @@ public class Vertex {
 
     public boolean external = true;
 
-    // x in Big Decimal
-    public BigDecimal nXBig; // n
-    public BigDecimal dXBig; // d
-
-    // y in Big Decimal
-    public BigDecimal nYBig; // n
-    public BigDecimal dYBig; // d
-
     public Vertex() {
         x = new Fraction(0, 1);
         y = new Fraction(0, 1);
-
-        nXBig = new BigDecimal(0);
-        dXBig = new BigDecimal(1);
-        nYBig = new BigDecimal(0);
-        dYBig = new BigDecimal(1);
     }
 
     public Vertex(Fraction x, Fraction y) {
         this.x = x;
         this.y = y;
     }
-
-    public Vertex(BigDecimal nX, BigDecimal dX, BigDecimal nY, BigDecimal dY) {
-        this.nXBig = nX;
-        this.dXBig = dX;
-        this.nYBig = nY;
-        this.dYBig = dY;
-    }
-
 
     public Vertex(long nX, long dX, long nY, long dY) {
         x = new Fraction(nX, dX);
@@ -62,33 +42,33 @@ public class Vertex {
         String xLine = line.substring(0, i).trim();
         String yLine = line.substring(i+1).trim();
 
+        BigInteger nX;
+        BigInteger dX;
+        BigInteger nY;
+        BigInteger dY;
+
         i = xLine.indexOf('/');
         if( i == -1 ) {
-            nXBig = new BigDecimal(xLine);
-            dXBig = new BigDecimal(1);
+            nX = new BigInteger(xLine);
+            dX = BigInteger.ONE;
         }
         else {
-            nXBig = new BigDecimal(xLine.substring(0, i).trim());
-            dXBig = new BigDecimal(xLine.substring(i+1).trim());
+            nX = new BigInteger(xLine.substring(0, i).trim());
+            dX = new BigInteger(xLine.substring(i+1).trim());
         }
 
         i = yLine.indexOf('/');
         if( i == -1 ) {
-            nYBig = new BigDecimal(yLine);
-            dYBig = new BigDecimal(1);
+            nY = new BigInteger(yLine);
+            dY = BigInteger.ONE;
         }
         else {
-            nYBig = new BigDecimal(yLine.substring(0, i).trim());
-            dYBig = new BigDecimal(yLine.substring(i+1).trim());
+            nY = new BigInteger(yLine.substring(0, i).trim());
+            dY = new BigInteger(yLine.substring(i+1).trim());
         }
         
-        x = new Fraction(nXBig.longValue(), dXBig.longValue()).normalize();
-        y = new Fraction(nYBig.longValue(), dYBig.longValue()).normalize();
-    }
-
-    public void makeValidFromSimpleFraction() {
-        x = new Fraction(nXBig.longValue(), dXBig.longValue()).normalize();
-        y = new Fraction(nYBig.longValue(), dYBig.longValue()).normalize();
+        x = new Fraction(nX, dX).normalize();
+        y = new Fraction(nY, dY).normalize();
     }
 
     public void addEdge(Edge e) {
@@ -105,9 +85,9 @@ public class Vertex {
 
     public Vertex rotate(double[] R) {
         final double ACC = 1024;
-        long rx = Math.round(ACC * (R[0] * x.n * y.d + R[1] * y.n * x.d));
-        long ry = Math.round(ACC * (R[2] * x.n * y.d + R[3] * y.n * x.d));
-        long den = Math.round(x.d * y.d * ACC);
+        long rx = Math.round(ACC * (R[0] * x.n.multiply(y.d).doubleValue() + R[1] * y.n.multiply(x.d).doubleValue()));
+        long ry = Math.round(ACC * (R[2] * x.n.multiply(y.d).doubleValue() + R[3] * y.n.multiply(x.d).doubleValue()));
+        long den = Math.round(x.d.multiply(y.d).doubleValue() * ACC);
         return new Vertex( rx, den, ry, den).normalize();
     }
 
@@ -184,21 +164,21 @@ public class Vertex {
 
     @Override
     public int hashCode() {
-        int result = (int) (x.n ^ (x.n >>> 32));
-        result = 31 * result + (int) (x.d ^ (x.d >>> 32));
-        result = 31 * result + (int) (y.n ^ (y.n >>> 32));
-        result = 31 * result + (int) (y.d ^ (y.d >>> 32));
+        int result = edges != null ? edges.hashCode() : 0;
+        result = 31 * result + (x != null ? x.hashCode() : 0);
+        result = 31 * result + (y != null ? y.hashCode() : 0);
+        result = 31 * result + (external ? 1 : 0);
         return result;
     }
 
     @Override
     public String toString() {
         String vdx_str = "";
-        if (x.d != 1) {
+        if (!x.d.equals(BigInteger.ONE)) {
             vdx_str = "/" + x.d;
         }
         String vdy_str = "";
-        if (y.d != 1) {
+        if (!y.d.equals(BigInteger.ONE)) {
             vdy_str = "/" + y.d;
         }
         return x.n + vdx_str + "," + y.n + vdy_str;

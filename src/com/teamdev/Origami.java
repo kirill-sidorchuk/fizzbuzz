@@ -2,6 +2,7 @@ package com.teamdev;
 
 import com.sun.org.apache.xpath.internal.operations.Or;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -237,7 +238,7 @@ public class Origami {
                 // validating facet
                 if( !failed ) {
                     Fraction area = OPolygon.calcArea(path.indexes, vertices);
-                    if (area.n > 0) {
+                    if (area.n.compareTo(BigInteger.ZERO) > 0) {
                         paths.add(path);
                     }
                 }
