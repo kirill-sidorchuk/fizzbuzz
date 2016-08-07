@@ -138,7 +138,7 @@ public class Fraction implements Comparable<Fraction> {
     @Override
     public int compareTo(Fraction o) {
         Fraction diff = sub(o);
-        return n.compareTo(o.n);
+        return diff.n.compareTo(new BigDecimal(0));
     }
 
     @Override
