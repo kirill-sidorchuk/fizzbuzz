@@ -22,6 +22,14 @@ public class GetHttpEntity {
         HttpEntity entity = response.getEntity();
         return entity;
     }
+    public HttpEntity getGetRequest(String url, String hash) throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(url+"/"+ hash);
+        httpGet.addHeader("X-API-Key", apiKey);
+        HttpResponse response = httpClient.execute(httpGet);
+        HttpEntity entity = response.getEntity();
+        return entity;
+    }
 
     public HttpEntity getPostRequest(String url, String apiKey) {
         HttpEntity entity = null;
