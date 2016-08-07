@@ -66,8 +66,6 @@ public class Converter {
 
             vertex.x = new com.teamdev.Fraction(x.n.longValue(), x.d.longValue());
             vertex.y = new com.teamdev.Fraction(y.n.longValue(), y.d.longValue());
-
-            vertex.shifted = true;
         }
 
         return new VertexShift(nXShift, dXShift, nYShift, dYShift);

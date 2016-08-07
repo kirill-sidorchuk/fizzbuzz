@@ -20,6 +20,8 @@ public class GetHttpEntity {
         httpGet.addHeader("X-API-Key", apiKey);
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
+        if( response.getStatusLine().getStatusCode() != 200 )
+            throw new IOException("http " + response.getStatusLine().getStatusCode());
         return entity;
     }
     public HttpEntity getGetRequest(String url, String hash) throws IOException {
@@ -28,6 +30,8 @@ public class GetHttpEntity {
         httpGet.addHeader("X-API-Key", apiKey);
         HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
+        if( response.getStatusLine().getStatusCode() != 200 )
+            throw new IOException("http " + response.getStatusLine().getStatusCode());
         return entity;
     }
 

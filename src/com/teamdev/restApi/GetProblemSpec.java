@@ -19,60 +19,31 @@ public class GetProblemSpec {
         GetHttpEntity httpEntity = new GetHttpEntity();
 
         HttpEntity entity = httpEntity.getGetRequest(getUrl, snapshotHash);
-
         InputStream instream = entity.getContent();
         char[] buffer = new char[256];
         int rc;
         StringBuilder sb = new StringBuilder();
 
         try (InputStreamReader reader = new InputStreamReader(instream)) {
-
             while ((rc = reader.read(buffer)) != -1)
                 sb.append(buffer, 0, rc);
         }
         Object o = sb.toString();
         return (String) o;
-
     }
 
-    public void getProblemSpec(String hash, File dstDir, String id) throws ParseException {
-        String obj = null;
-
-        try {
-            obj = sendBlobProblemsGet(hash);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void getProblemSpec(String hash, File dstDir, String id) throws ParseException, IOException {
+        String obj = sendBlobProblemsGet(hash);
         writeToFile(obj.toString(), dstDir, id);
     }
 
-    private void writeToFile(String spec, File dstDir, String id) {
+    private void writeToFile(String spec, File dstDir, String id) throws IOException {
         File f1 = new File(dstDir, id + ".txt");
-        try {
-            f1.createNewFile();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-//            JSONObject object;
-//            StringBuffer buffer = new StringBuffer();
-//            String str;
-//            for(Object problem: problems) {
-//                object = (JSONObject) problem;
-//                str = object.get("problem_spec_hash").toString();
-//                buffer.append(str);
-//                buffer.append("\n");
-//            }
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f1), "utf-8"))) {
             writer.write(spec);
             writer.flush();
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-
 
     private BufferedReader openFileReader(String filename) {
         BufferedReader reader = null;
@@ -84,7 +55,7 @@ public class GetProblemSpec {
         return reader;
     }
 
-    public void problemsWriter(String fileName, File dstDir) throws IOException {
+    public void downloadAll(String fileName, File dstDir) throws IOException {
 
         List<String> lines = null;
         try {
@@ -103,11 +74,13 @@ public class GetProblemSpec {
                 String id = line.substring(0, i).trim();
                 String problemHash = line.substring(i + 1).trim();
 
-                System.out.println(id);
+                File problemFile = new File(dstDir, id + ".txt");
+                if( !problemFile.exists()) {
 
-                getProblemSpec(problemHash, dstDir, id);
-
-                Thread.sleep(200);
+                    System.out.println(id);
+                    getProblemSpec(problemHash, dstDir, id);
+                    Thread.sleep(200);
+                }
 
             }catch (Exception e) {
                 System.out.println("Failed to download problem: " + line);

@@ -145,7 +145,7 @@ public class ProblemSubmitter {
                     resultString = line.substring(i, j);
                 }
             }
-//            System.out.println(line);
+            System.out.println(line);
         }
 
         return resultString;

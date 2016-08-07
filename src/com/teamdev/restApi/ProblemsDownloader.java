@@ -35,7 +35,7 @@ public class ProblemsDownloader {
 
         System.out.println("downloading all problems");
         GetProblemSpec getProb = new GetProblemSpec();
-        getProb.problemsWriter(problemIdHashFile.getPath(), dstDir);
+        getProb.downloadAll(problemIdHashFile.getPath(), dstDir);
 
 
     }

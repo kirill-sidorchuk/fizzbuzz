@@ -14,8 +14,6 @@ public class Vertex {
 
     public List<Edge> edges;
 
-    boolean shifted = false;
-
     public Fraction x;
     public Fraction y;
 
@@ -42,7 +40,6 @@ public class Vertex {
     public Vertex(Fraction x, Fraction y) {
         this.x = x;
         this.y = y;
-        this.shifted = true;
     }
 
     public Vertex(BigDecimal nX, BigDecimal dX, BigDecimal nY, BigDecimal dY) {
@@ -56,7 +53,6 @@ public class Vertex {
     public Vertex(long nX, long dX, long nY, long dY) {
         x = new Fraction(nX, dX);
         y = new Fraction(nY, dY);
-        shifted = true;
     }
 
     public Vertex(String line) {
@@ -93,7 +89,6 @@ public class Vertex {
     public void makeValidFromSimpleFraction() {
         x = new Fraction(nXBig.longValue(), dXBig.longValue()).normalize();
         y = new Fraction(nYBig.longValue(), dYBig.longValue()).normalize();
-        shifted = true;
     }
 
     public void addEdge(Edge e) {
@@ -151,17 +146,17 @@ public class Vertex {
     }
 
     public static Vertex average(List<Vertex> list) {
-        double x = 0;
-        double y = 0;
+        Vertex sum = new Vertex();
         for (Vertex v : list) {
-            x += v.getFloatX();
-            y += v.getFloatY();
+            sum = sum.add(v);
         }
 
-        final long ACC = 10000;
-        long den = ACC * list.size();
+        if( list.size() != 0 ) sum = sum.div(list.size());
+        return sum;
+    }
 
-        return new Vertex(Math.round(ACC*x), den, Math.round(y*ACC), den).normalize();
+    private Vertex div(long c) {
+        return new Vertex(x.div(c), y.div(c)).normalize();
     }
 
     public Vertex normalize() {
@@ -170,19 +165,11 @@ public class Vertex {
         return this;
     }
 
-    private void checkShifted(){
-        if (!shifted) {
-            throw new InvalidStateException("Vertex is not shifted");
-        }
-    }
-
     public float getFloatX() {
-        checkShifted();
         return x.getFloatValue();
     }
 
     public float getFloatY() {
-        checkShifted();
         return y.getFloatValue();
     }
 

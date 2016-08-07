@@ -16,15 +16,17 @@ public class ImperfectSolver {
 
         if( problem.calcArea().equals(new Fraction(1,1))) {
             // solving perfectly any shifted and rotated square
-            return shiftedSqaureSolution(problem);
+            Solution solution = shiftedSqaureSolution(problem);
+            solution.isPerfect = true;
+            return solution;
         }
         else {
 
             // folding square to get similar area
-            return foldedSquareSolution(problem);
+//            return foldedSquareSolution(problem);
 
             // shifted square
-            //return centeredSquareSolution(problem);
+            return centeredSquareSolution(problem);
         }
     }
 
@@ -123,15 +125,35 @@ public class ImperfectSolver {
 
         File[] problemFiles = listProblems(srcDir);
 
+        int nDeletedFiles = 0;
+        int nPerfectSolutions = 0;
+
         for (File problemFile : problemFiles) {
             try {
                 System.out.println("reading " + problemFile.getName());
                 File solutionFile = Utils.getSolutionFile(problemFile);
                 if( Utils.isPerfetlySolved(solutionFile)) continue;
 
-                Problem problem = ProblemReader.read(problemFile);
+                Problem problem = null;
+                try {
+                    problem = ProblemReader.read(problemFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    System.out.println("deleting " + problemFile.getPath());
+                    if( !problemFile.delete() ) {
+                        System.out.println("couldn't delete " + problemFile.getPath());
+                    }
+                    else {
+                        nDeletedFiles++;
+                    }
+
+                    continue;
+                }
 
                 Solution solution = getSolution(problem);
+                if( solution.isPerfect )
+                    nPerfectSolutions++;
                 solution.save(solutionFile);
 
             } catch (Exception e) {
@@ -139,6 +161,9 @@ public class ImperfectSolver {
                 e.printStackTrace();
             }
         }
+
+        System.out.println("count of deleted files = " + nDeletedFiles);
+        System.out.println("count of perfect solutions = " + nPerfectSolutions);
 
     }
 
