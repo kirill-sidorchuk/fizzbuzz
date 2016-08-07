@@ -23,4 +23,22 @@ public class Utils {
         }
         return lines;
     }
+
+    static double getAngle(double sine, double cosine) {
+        if( cosine >= 0 ) {
+            return Math.asin(sine);
+        }
+        return sine >= 0 ? Math.acos(cosine) : -Math.acos(cosine);
+    }
+
+    public static void main(String[] args) {
+        double a = -100.0 * Math.PI / 180.;
+
+        double cosine = Math.cos(a);
+        double sine = Math.sin(a);
+
+        double r = 180 * getAngle(sine, cosine) / Math.PI;
+
+        System.out.println(r);
+    }
 }
